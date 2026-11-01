@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 750" role="img" aria-label="Voices Unmuted placeholder">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#112a45"/>
+      <stop offset="100%" stop-color="#9fd0e8" stop-opacity="0.55"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="750" fill="url(#g)"/>
+  <rect x="48" y="48" width="1104" height="654" fill="none" stroke="rgba(245,250,252,0.28)" stroke-width="2"/>
+  <text x="600" y="380" text-anchor="middle" font-family="Sora, Arial, sans-serif" font-size="42" font-weight="600" fill="rgba(245,250,252,0.92)">Voices Unmuted</text>
+  <text x="600" y="430" text-anchor="middle" font-family="Epilogue, Arial, sans-serif" font-size="22" fill="rgba(245,250,252,0.55)">Image coming soon</text>
+</svg>

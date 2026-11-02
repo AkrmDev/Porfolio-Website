@@ -1108,6 +1108,34 @@ main { position: relative; }
   .band.visible .skill-panel { animation: none; }
 }
 
+
+/* ========== EXPERIENCE DETAIL PAGES ========== */
+.exp-hero {
+  position: relative;
+  height: clamp(7rem, 18vw, 11rem);
+  overflow: hidden;
+  border-bottom: 1px solid var(--line);
+  background: linear-gradient(135deg, #0c0c0f 0%, #141018 45%, #1a1014 100%);
+}
+.exp-hero__glow {
+  position: absolute;
+  inset: -20% -10% auto auto;
+  width: min(28rem, 70vw);
+  height: min(28rem, 70vw);
+  background: radial-gradient(circle, rgba(255, 77, 77, 0.22) 0%, transparent 68%);
+  pointer-events: none;
+}
+.exp-case { padding-top: 0.5rem; }
+.exp-cta {
+  margin-top: 0.85rem;
+  align-self: flex-start;
+  position: relative;
+  z-index: 2;
+}
+.career-timeline li .exp-cta {
+  display: inline-flex;
+}
+
 /* ========== EDUCATION ========== */
 .edu-logos {
   display: grid;

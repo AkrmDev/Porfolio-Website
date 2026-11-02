@@ -176,7 +176,7 @@
     metrics.forEach((m) => metricObserver.observe(m));
   })();
 
-  /* Case study sticky mini-nav — no history spam + auto-scroll active tab */
+  /* Case study sticky mini-nav — no history spam; horizontal tab reveal without page-scroll fight */
   (() => {
     const progress = document.querySelector(".case-progress");
     if (!progress) return;
@@ -191,26 +191,41 @@
       })
       .filter(Boolean);
 
+    let activeId = null;
+    let clicking = false;
+
     const clearHash = () => {
       if (!window.location.hash) return;
       const url = window.location.pathname + window.location.search;
       window.history.replaceState(null, "", url);
     };
 
-    const scrollTabIntoView = (link) => {
+    /* Only shift the tab strip horizontally — never scrollIntoView (that freezes page scroll) */
+    const revealTab = (link) => {
       if (!link) return;
-      const behavior = reduceMotion ? "auto" : "smooth";
-      link.scrollIntoView({ inline: "center", block: "nearest", behavior });
+      const strip = progress;
+      const left = link.offsetLeft;
+      const right = left + link.offsetWidth;
+      const viewLeft = strip.scrollLeft;
+      const viewRight = viewLeft + strip.clientWidth;
+      const pad = 24;
+      if (left < viewLeft + pad) {
+        strip.scrollLeft = Math.max(0, left - pad);
+      } else if (right > viewRight - pad) {
+        strip.scrollLeft = right - strip.clientWidth + pad;
+      }
     };
 
     const setActive = (id) => {
+      if (!id || id === activeId) return;
+      activeId = id;
       let active = null;
       links.forEach((link) => {
         const on = link.getAttribute("href") === `#${id}`;
         link.classList.toggle("is-active", on);
         if (on) active = link;
       });
-      scrollTabIntoView(active);
+      revealTab(active);
     };
 
     links.forEach((link) => {
@@ -219,31 +234,32 @@
         const section = document.getElementById(id);
         if (!section) return;
         event.preventDefault();
-        section.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+        clicking = true;
         setActive(id);
-        clearHash();
+        section.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
         window.history.replaceState(null, "", window.location.pathname + window.location.search);
+        window.setTimeout(() => {
+          clicking = false;
+        }, reduceMotion ? 50 : 650);
       });
     });
 
-    /* Drop any deep-link hash so Back leaves the case page in one step */
     clearHash();
 
-    if (!sections.length || reduceMotion) {
-      if (links[0]) {
-        links[0].classList.add("is-active");
-        scrollTabIntoView(links[0]);
-      }
+    if (links[0]) {
+      links[0].classList.add("is-active");
+      activeId = links[0].getAttribute("href").slice(1);
     }
 
     const sectionObserver = new IntersectionObserver(
       (entries) => {
+        if (clicking) return;
         const visible = entries
           .filter((e) => e.isIntersecting)
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
         if (visible[0]?.target?.id) setActive(visible[0].target.id);
       },
-      { rootMargin: "-30% 0px -55% 0px", threshold: [0.1, 0.35, 0.6] }
+      { rootMargin: "-35% 0px -50% 0px", threshold: [0.15, 0.4] }
     );
     sections.forEach((section) => sectionObserver.observe(section));
   })();

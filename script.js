@@ -387,53 +387,47 @@
 
     if (reduceMotion) {
       items.forEach((item) => item.classList.add("is-inview", "is-reached"));
-      progressEl.style.height = `${Math.max(0, list.offsetHeight - 8)}px`;
+      progressEl.style.transform = "scaleY(1)";
       return;
     }
 
-    let currentH = 0;
-    let targetH = 0;
+    let currentP = 0;
+    let targetP = 0;
     let rafId = 0;
+    let trackH = 1;
 
     const measureTarget = () => {
-      const trackH = Math.max(0, list.offsetHeight - 8);
+      trackH = Math.max(1, list.offsetHeight - 8);
       const rect = wrap.getBoundingClientRect();
       const start = rect.top + window.scrollY;
-      const view = window.scrollY + window.innerHeight * 0.52;
-      const raw = (view - start) / Math.max(1, trackH);
-      const pct = Math.max(0, Math.min(1, raw));
-      targetH = pct * trackH;
-
-      items.forEach((item) => {
-        const dot = item.querySelector(".timeline-dot");
-        const y = (dot || item).offsetTop + ((dot || item).offsetHeight / 2);
-        const reached = currentH >= y - 4;
-        item.classList.toggle("is-reached", reached);
-        if (reached) item.classList.add("is-inview");
-      });
+      /* Drive progress while the timeline is in the reading band (upper ~2/3). */
+      const view = window.scrollY + window.innerHeight * 0.62;
+      const raw = (view - start) / trackH;
+      targetP = Math.max(0, Math.min(1, raw));
     };
 
     const tick = () => {
       measureTarget();
-      const delta = targetH - currentH;
-      if (Math.abs(delta) < 0.35) {
-        currentH = targetH;
-      } else {
-        currentH += delta * 0.14;
-      }
-      progressEl.style.height = `${currentH}px`;
+      const delta = targetP - currentP;
+      if (Math.abs(delta) < 0.0015) currentP = targetP;
+      else currentP += delta * 0.18;
+      progressEl.style.transform = `scaleY(${currentP})`;
 
+      const px = currentP * trackH;
       items.forEach((item) => {
         const dot = item.querySelector(".timeline-dot");
-        const y = (dot || item).offsetTop + ((dot || item).offsetHeight / 2);
-        item.classList.toggle("is-reached", currentH >= y - 4);
+        /* offsetTop on the absolutely-positioned dot is relative to the li —
+           measure along the list track via the item instead. */
+        const y =
+          item.offsetTop +
+          (dot ? dot.offsetTop + dot.offsetHeight / 2 : item.offsetHeight / 2);
+        const reached = px >= y - 4;
+        item.classList.toggle("is-reached", reached);
+        if (reached) item.classList.add("is-inview");
       });
 
-      if (Math.abs(targetH - currentH) >= 0.35) {
-        rafId = requestAnimationFrame(tick);
-      } else {
-        rafId = 0;
-      }
+      if (Math.abs(targetP - currentP) >= 0.0015) rafId = requestAnimationFrame(tick);
+      else rafId = 0;
     };
 
     const kick = () => {

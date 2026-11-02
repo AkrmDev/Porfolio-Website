@@ -46,13 +46,14 @@
     revealTargets.forEach((el) => revealObserver.observe(el));
   }
 
-  /* Mobile burger nav */
+  /* Mobile burger — self-contained drawer (open via hamburger; close via X / backdrop / Esc / link) */
   (() => {
     const nav = document.querySelector("[data-nav]");
     if (!nav) return;
 
     const toggle = nav.querySelector(".nav-toggle");
     const panel = nav.querySelector(".topnav-panel");
+    const closeBtn = nav.querySelector(".drawer-close");
     if (!toggle || !panel) return;
 
     let backdrop = document.querySelector(".nav-backdrop");
@@ -64,20 +65,35 @@
     }
 
     const mq = window.matchMedia("(max-width: 820px)");
+    let lastFocus = null;
 
     const setOpen = (open) => {
+      if (!mq.matches && open) return;
+      const wasOpen = nav.classList.contains("is-open");
       nav.classList.toggle("is-open", open);
       toggle.setAttribute("aria-expanded", open ? "true" : "false");
       document.body.classList.toggle("nav-locked", open && mq.matches);
       backdrop.classList.toggle("is-visible", open && mq.matches);
       backdrop.hidden = !(open && mq.matches);
-      const label = toggle.querySelector(".nav-toggle-label");
-      if (label) label.textContent = open ? "Close" : "Menu";
+
+      if (open && !wasOpen) {
+        lastFocus = document.activeElement;
+        const focusTarget = closeBtn || panel.querySelector("a");
+        if (focusTarget) focusTarget.focus();
+      } else if (!open && wasOpen && lastFocus) {
+        lastFocus.focus();
+        lastFocus = null;
+      }
     };
 
     toggle.addEventListener("click", () => {
-      setOpen(!nav.classList.contains("is-open"));
+      if (!mq.matches) return;
+      setOpen(true);
     });
+
+    if (closeBtn) {
+      closeBtn.addEventListener("click", () => setOpen(false));
+    }
 
     backdrop.addEventListener("click", () => setOpen(false));
 
@@ -176,47 +192,60 @@
     metrics.forEach((m) => metricObserver.observe(m));
   })();
 
-  /* Case study sticky mini-nav — no history spam; horizontal tab reveal without page-scroll fight */
+  /* Case progress — scroll-lerped sliding pill (no IntersectionObserver tab jumping) */
   (() => {
     const progress = document.querySelector(".case-progress");
     if (!progress) return;
 
+    const track = progress.querySelector(".case-progress-track") || progress;
+    const pill = progress.querySelector(".case-progress-pill");
     const links = [...progress.querySelectorAll("a[href^='#']")];
-    if (!links.length) return;
+    if (!links.length || !pill) return;
 
     const sections = links
-      .map((link) => {
-        const id = link.getAttribute("href").slice(1);
-        return document.getElementById(id);
-      })
+      .map((link) => document.getElementById(link.getAttribute("href").slice(1)))
       .filter(Boolean);
+    if (sections.length !== links.length) return;
 
     let activeId = null;
     let clicking = false;
+    let ticking = false;
+    let pillX = 0;
+    let pillW = 0;
 
-    const clearHash = () => {
-      if (!window.location.hash) return;
-      const url = window.location.pathname + window.location.search;
-      window.history.replaceState(null, "", url);
+    const navOffset = () => {
+      const nav = document.querySelector(".topnav");
+      return (nav ? nav.offsetHeight : 60) + 12;
     };
 
-    /* Only shift the tab strip horizontally — never scrollIntoView (that freezes page scroll) */
+    const sectionTops = () =>
+      sections.map((section) => section.getBoundingClientRect().top + window.scrollY);
+
+    const placePill = (x, w, immediate) => {
+      pillX = x;
+      pillW = w;
+      pill.style.width = `${w}px`;
+      if (immediate || reduceMotion) {
+        pill.style.transition = "none";
+        pill.style.transform = `translate3d(${x}px, -50%, 0)`;
+        return;
+      }
+      pill.style.transition = "transform 0.18s linear, width 0.18s linear";
+      pill.style.transform = `translate3d(${x}px, -50%, 0)`;
+    };
+
     const revealTab = (link) => {
       if (!link) return;
-      const strip = progress;
       const left = link.offsetLeft;
       const right = left + link.offsetWidth;
-      const viewLeft = strip.scrollLeft;
-      const viewRight = viewLeft + strip.clientWidth;
-      const pad = 24;
-      if (left < viewLeft + pad) {
-        strip.scrollLeft = Math.max(0, left - pad);
-      } else if (right > viewRight - pad) {
-        strip.scrollLeft = right - strip.clientWidth + pad;
-      }
+      const viewLeft = progress.scrollLeft;
+      const viewRight = viewLeft + progress.clientWidth;
+      const pad = 28;
+      if (left < viewLeft + pad) progress.scrollLeft = Math.max(0, left - pad);
+      else if (right > viewRight - pad) progress.scrollLeft = right - progress.clientWidth + pad;
     };
 
-    const setActive = (id) => {
+    const setActiveLabel = (id) => {
       if (!id || id === activeId) return;
       activeId = id;
       let active = null;
@@ -228,6 +257,40 @@
       revealTab(active);
     };
 
+    const updateFromScroll = () => {
+      ticking = false;
+      if (clicking) return;
+
+      const tops = sectionTops();
+      const marker = window.scrollY + navOffset();
+      let index = 0;
+      for (let i = 0; i < tops.length; i += 1) {
+        if (marker >= tops[i] - 1) index = i;
+      }
+
+      const current = links[index];
+      const next = links[Math.min(index + 1, links.length - 1)];
+      const start = tops[index];
+      const end = index < tops.length - 1 ? tops[index + 1] : start + sections[index].offsetHeight;
+      const span = Math.max(1, end - start);
+      const t = Math.max(0, Math.min(1, (marker - start) / span));
+
+      const x1 = current.offsetLeft;
+      const w1 = current.offsetWidth;
+      const x2 = next.offsetLeft;
+      const w2 = next.offsetWidth;
+      const x = x1 + (x2 - x1) * t;
+      const w = w1 + (w2 - w1) * t;
+      placePill(x, w, false);
+      setActiveLabel(sections[index].id);
+    };
+
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(updateFromScroll);
+    };
+
     links.forEach((link) => {
       link.addEventListener("click", (event) => {
         const id = link.getAttribute("href").slice(1);
@@ -235,32 +298,30 @@
         if (!section) return;
         event.preventDefault();
         clicking = true;
-        setActive(id);
-        section.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+        setActiveLabel(id);
+        placePill(link.offsetLeft, link.offsetWidth, false);
+        const top = section.getBoundingClientRect().top + window.scrollY - navOffset();
+        window.scrollTo({ top, behavior: reduceMotion ? "auto" : "smooth" });
         window.history.replaceState(null, "", window.location.pathname + window.location.search);
         window.setTimeout(() => {
           clicking = false;
-        }, reduceMotion ? 50 : 650);
+          updateFromScroll();
+        }, reduceMotion ? 40 : 700);
       });
     });
 
-    clearHash();
-
-    if (links[0]) {
-      links[0].classList.add("is-active");
-      activeId = links[0].getAttribute("href").slice(1);
+    if (window.location.hash) {
+      window.history.replaceState(null, "", window.location.pathname + window.location.search);
     }
 
-    const sectionObserver = new IntersectionObserver(
-      (entries) => {
-        if (clicking) return;
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-        if (visible[0]?.target?.id) setActive(visible[0].target.id);
-      },
-      { rootMargin: "-35% 0px -50% 0px", threshold: [0.15, 0.4] }
-    );
-    sections.forEach((section) => sectionObserver.observe(section));
+    placePill(links[0].offsetLeft, links[0].offsetWidth, true);
+    setActiveLabel(sections[0].id);
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", () => {
+      placePill(pillX || links[0].offsetLeft, pillW || links[0].offsetWidth, true);
+      updateFromScroll();
+    }, { passive: true });
+    updateFromScroll();
   })();
 })();

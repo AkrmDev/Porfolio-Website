@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Syne:wght@500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../assets/site-20261102c.css" />
+  <link rel="stylesheet" href="../assets/site-20261102d.css" />
 </head>
 <body>
   <div class="atmosphere" aria-hidden="true"></div>
@@ -19,6 +19,12 @@
       <span class="nav-toggle-label">Menu</span>
     </button>
     <div class="topnav-panel" id="primary-nav-panel">
+      <div class="drawer-head">
+        <p class="drawer-title">Menu</p>
+        <button class="drawer-close" type="button" aria-label="Close menu">
+          <span aria-hidden="true"></span>
+        </button>
+      </div>
       <div class="topnav-links">
         <a href="../index.html#projects">Projects</a>
         <a href="../index.html#experience">Experience</a>
@@ -50,13 +56,16 @@
     </div>
 
     <nav class="case-progress" aria-label="Case study sections">
-      <a href="#overview">Overview</a>
+      <div class="case-progress-track">
+        <span class="case-progress-pill" aria-hidden="true"></span>
+<a href="#overview">Overview</a>
       <a href="#problem">Problem</a>
       <a href="#role">Role</a>
       <a href="#architecture">Architecture</a>
       <a href="#stack">Stack</a>
       <a href="#challenges">Challenges</a>
       <a href="#results">Results</a>
+      </div>
     </nav>
 
     <section class="case-section" id="overview">
@@ -98,6 +107,6 @@
       </div>
     </section>
   </article>
-  <script src="../assets/site-20261102c.js"></script>
+  <script src="../assets/site-20261102d.js"></script>
 </body>
 </html>

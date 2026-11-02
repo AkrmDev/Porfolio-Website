@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Syne:wght@500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="assets/site-20261102g.css" />
+  <link rel="stylesheet" href="assets/site-20261102h.css" />
 </head>
 <body>
   <a class="skip-link" href="#projects">Skip to projects</a>
@@ -38,33 +38,49 @@
     </div>
   </header>
 
-  <nav class="topnav" aria-label="Primary" data-nav>
-    <a class="topnav-brand" href="#top">Akram Ali</a>
-    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav-panel">
-      <span class="nav-toggle-box" aria-hidden="true">
+  <header class="site-nav" data-site-nav>
+    <a class="site-nav__brand" href="#top">Akram Ali</a>
+    <nav class="site-nav__desktop" aria-label="Primary">
+      <a href="#projects">Projects</a>
+      <a href="#experience">Experience</a>
+      <a href="#skills">Skills</a>
+      <a href="#about">Education</a>
+      <a href="#contact">Contact</a>
+      <a class="site-nav__resume" href="resume.pdf" download>Download Resume</a>
+    </nav>
+    <button
+      class="site-nav__burger"
+      type="button"
+      aria-expanded="false"
+      aria-controls="site-menu"
+      aria-label="Open menu"
+      data-site-menu-open
+    >
+      <span class="site-nav__burger-icon" aria-hidden="true">
         <span></span><span></span><span></span>
       </span>
-      <span class="nav-toggle-label">Menu</span>
     </button>
-    <div class="topnav-panel" id="primary-nav-panel">
-      <div class="drawer-head">
-        <p class="drawer-title">Menu</p>
-        <button class="drawer-close" type="button" aria-label="Close menu" data-drawer-close>
-          <span class="drawer-close-icon" aria-hidden="true"></span>
+  </header>
+
+  <div class="site-menu" id="site-menu" hidden data-site-menu>
+    <button class="site-menu__backdrop" type="button" aria-label="Close menu" data-site-menu-close tabindex="-1"></button>
+    <div class="site-menu__sheet" role="dialog" aria-modal="true" aria-labelledby="site-menu-title">
+      <div class="site-menu__chrome">
+        <p class="site-menu__title" id="site-menu-title">Menu</p>
+        <button class="site-menu__x" type="button" aria-label="Close menu" data-site-menu-close>
+          <span class="site-menu__x-glyph" aria-hidden="true"></span>
         </button>
       </div>
-      <div class="topnav-links">
+      <nav class="site-menu__nav" aria-label="Mobile">
         <a href="#projects">Projects</a>
         <a href="#experience">Experience</a>
         <a href="#skills">Skills</a>
         <a href="#about">Education</a>
-      </div>
-      <div class="topnav-actions">
         <a href="#contact">Contact</a>
-        <a class="nav-resume" href="resume.pdf" download>Download Resume</a>
-      </div>
+        <a class="site-menu__resume" href="resume.pdf" download>Download Resume</a>
+      </nav>
     </div>
-  </nav>
+  </div>
 
   <main>
     <section id="projects" class="band">
@@ -348,6 +364,6 @@
     <p>Akram Ali · Software Engineer · Detroit, MI</p>
     <p><a href="resume.pdf" download>Download Resume</a> · <a href="mailto:ali.akram.213103@gmail.com">Email</a> · <a href="tel:+13136693286">Call</a></p>
   </footer>
-  <script src="assets/site-20261102g.js"></script>
+  <script src="assets/site-20261102h.js"></script>
 </body>
 </html>

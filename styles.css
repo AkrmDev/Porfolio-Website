@@ -43,12 +43,16 @@ a { color: var(--signal); }
   color: #f5fafc;
 }
 
-.hero-visual { position: absolute; inset: 0; }
+.hero-visual {
+  position: absolute;
+  inset: 0;
+  background: #0b1f3a;
+}
 .hero-visual img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: center 18%;
+  object-fit: contain;
+  object-position: center center;
   animation: floatImg 18s ease-in-out infinite alternate;
 }
 .hero-wash {
@@ -113,7 +117,7 @@ a { color: var(--signal); }
 .btn.compact { margin-top: 1rem; }
 .btn:hover { transform: translateY(-2px); }
 
-/* Sticky nav */
+/* Sticky nav — shared on home and project pages */
 .topnav {
   position: sticky;
   top: 0;
@@ -545,6 +549,9 @@ footer a { color: var(--navy); font-weight: 600; }
   max-width: 48ch;
   color: rgba(11, 31, 58, 0.78);
 }
+.case-actions.early {
+  margin: 0 0 1.35rem;
+}
 .case-section {
   padding: 1.75rem 0;
   border-top: 1px solid var(--line);
@@ -614,8 +621,8 @@ footer a { color: var(--navy); font-weight: 600; }
   to { opacity: 1; transform: translateY(0); }
 }
 @keyframes floatImg {
-  from { transform: scale(1.04) translateY(0); }
-  to { transform: scale(1.1) translateY(-1.5%); }
+  from { transform: translateY(0); }
+  to { transform: translateY(-1%); }
 }
 @keyframes wash {
   from { filter: hue-rotate(0deg); }

@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FOOTPRINT Detection — Akram Ali</title>
-  <meta name="description" content="FOOTPRINT — real-time missing person detection with YOLOv5, OpenCV, Django, and Docker." />
+  <title>FOOTPRINT — Software Case Study | Akram Ali</title>
+  <meta name="description" content="FOOTPRINT — computer-vision missing person detection with YOLOv5, OpenCV, Django, Docker, and Roboflow." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;600;700&family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Syne:wght@500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../styles.css" />
 </head>
 <body>
@@ -15,9 +15,7 @@
   <nav class="topnav" aria-label="Primary" data-nav>
     <a class="topnav-brand" href="../index.html">Akram Ali</a>
     <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav-panel">
-      <span class="nav-toggle-box" aria-hidden="true">
-        <span></span><span></span><span></span>
-      </span>
+      <span class="nav-toggle-box" aria-hidden="true"><span></span><span></span><span></span></span>
       <span class="nav-toggle-label">Menu</span>
     </button>
     <div class="topnav-panel" id="primary-nav-panel">
@@ -33,64 +31,148 @@
       </div>
     </div>
   </nav>
+
+  <div class="case-cover">
+    <img src="../assets/projects/footprint.jpg" alt="FOOTPRINT detection dashboard" />
+  </div>
+
   <article class="case">
-    <p class="eyebrow">Computer Vision · Aug 2024 – Dec 2024</p>
-    <h1>FOOTPRINT Detection</h1>
-    <p class="case-lead">Full-stack web app for real-time missing person detection using YOLOv5 and OpenCV — attribute search, upload queues, and operator dashboards.</p>
-    <ul class="tags">
-      <li>Computer Vision</li><li>YOLOv5</li><li>OpenCV</li><li>Django</li><li>Docker</li><li>Firebase</li><li>Roboflow</li>
-    </ul>
+    <div class="case-intro">
+      <p class="eyebrow">Computer Vision · Aug 2024 – Dec 2024 · Completed</p>
+      <h1>FOOTPRINT Detection</h1>
+      <p class="case-lead">A full-stack application that runs object detection on video, tags visual attributes, and helps operators search for missing persons without scrubbing footage by hand.</p>
+      <ul class="tags">
+        <li>YOLOv5</li><li>OpenCV</li><li>Django</li><li>Docker</li><li>Firebase</li><li>Roboflow</li>
+      </ul>
+      <div class="case-actions early">
+        <a class="btn signal" href="https://github.com/akrmDev/Missing-Person-App" target="_blank" rel="noopener noreferrer">View on GitHub</a>
+      </div>
+    </div>
 
-    <img class="case-hero" src="../assets/projects/footprint.jpg" alt="FOOTPRINT — missing person detection app" />
+    <nav class="case-progress" aria-label="Case study sections">
+      <a href="#overview">Overview</a>
+      <a href="#problem">Problem</a>
+      <a href="#role">Role</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#stack">Stack</a>
+      <a href="#challenges">Challenges</a>
+      <a href="#results">Results</a>
+      <a href="#samples">Samples</a>
+    </nav>
 
-    <section class="case-section">
-      <h2>Challenge</h2>
-      <p>Manual review of surveillance footage is slow when searching for missing persons across live or recorded video. Operators need searchable visual traits — hair, clothing type and color — not just raw detections.</p>
+    <section class="case-section" id="overview">
+      <h2>Overview</h2>
+      <p>FOOTPRINT turns surveillance or uploaded video into searchable detections. Operators filter by traits such as hair and clothing color, review queued jobs, and inspect model output instead of watching hours of raw footage.</p>
     </section>
-    <section class="case-section">
-      <h2>Solution</h2>
-      <p>Built a Django/Firebase backend for live queries and user data, Dockerized inference at configurable speeds, and a UI for YouTube/video upload, queue management, attribute filtering, and result review. Training dataset managed in Roboflow (4,000+ annotated images).</p>
+    <section class="case-section" id="problem">
+      <h2>Problem</h2>
+      <p>Manual review does not scale when looking for a person across live or recorded streams. Bounding boxes alone are not enough — search needs structured attributes operators can query, plus a pipeline that accepts video, runs inference at controlled speeds, and stores results for review.</p>
     </section>
-    <section class="case-section">
-      <h2>Performance</h2>
+    <section class="case-section" id="role">
+      <h2>My role</h2>
+      <p>Built and integrated the application stack as part of a Wayne State team project: training data workflow in Roboflow, model metrics, Django/Firebase backend for queries and user data, Dockerized inference, and the operator UI for uploads, queues, filters, and result review.</p>
+    </section>
+    <section class="case-section" id="architecture">
+      <h2>Architecture</h2>
+      <p>Video enters through an upload/YouTube ingest path into a processing queue. A Dockerized inference service runs detection at configurable speeds. Attributes are written for dashboard search. Firebase supports auth/user data; Django serves application logic and live queries. Operators interact through a web UI for filters, queue status, and result galleries.</p>
+    </section>
+    <section class="case-section" id="stack">
+      <h2>Tech stack</h2>
+      <ul class="badges">
+        <li>YOLOv5 / vision models</li><li>OpenCV</li><li>Django</li><li>Firebase</li><li>Docker</li><li>Roboflow</li>
+      </ul>
+      <p>Roboflow held the annotated training set (4,000+ images). Inference was containerized so speed modes and environments stayed reproducible.</p>
+    </section>
+    <section class="case-section" id="challenges">
+      <h2>Technical challenges &amp; solutions</h2>
+      <ul>
+        <li><strong>Attribute search, not just boxes:</strong> trained and evaluated hair/clothing detectors so results were filterable traits.</li>
+        <li><strong>Throughput vs accuracy:</strong> Dockerized inference with speed modes so operators could trade latency for coverage.</li>
+        <li><strong>Operator workflow:</strong> upload queue, history, and dashboards so the system was usable beyond a notebook demo.</li>
+      </ul>
+    </section>
+    <section class="case-section" id="results">
+      <h2>Results</h2>
       <div class="metrics">
-        <div class="metric"><strong>90%</strong><span>Less manual review time</span></div>
-        <div class="metric"><strong>91.3%</strong><span>Hair color mAP</span></div>
-        <div class="metric"><strong>90.9%</strong><span>Clothing mAP</span></div>
-        <div class="metric"><strong>4,147</strong><span>Dataset images</span></div>
+        <div class="metric" data-metric="pct" data-value="90">
+          <div class="metric-ring" aria-hidden="true">
+            <svg viewBox="0 0 100 100">
+              <circle class="ring-track" cx="50" cy="50" r="45"></circle>
+              <circle class="ring-value" cx="50" cy="50" r="45"></circle>
+            </svg>
+            <strong>90%</strong>
+          </div>
+          <div class="metric-bar-wrap"><div class="metric-bar"></div></div>
+          <span>Less manual review time</span>
+        </div>
+        <div class="metric" data-metric="pct" data-value="91.3">
+          <div class="metric-ring" aria-hidden="true">
+            <svg viewBox="0 0 100 100">
+              <circle class="ring-track" cx="50" cy="50" r="45"></circle>
+              <circle class="ring-value" cx="50" cy="50" r="45"></circle>
+            </svg>
+            <strong>91.3%</strong>
+          </div>
+          <div class="metric-bar-wrap"><div class="metric-bar"></div></div>
+          <span>Hair color mAP</span>
+        </div>
+        <div class="metric" data-metric="pct" data-value="90.9">
+          <div class="metric-ring" aria-hidden="true">
+            <svg viewBox="0 0 100 100">
+              <circle class="ring-track" cx="50" cy="50" r="45"></circle>
+              <circle class="ring-value" cx="50" cy="50" r="45"></circle>
+            </svg>
+            <strong>90.9%</strong>
+          </div>
+          <div class="metric-bar-wrap"><div class="metric-bar"></div></div>
+          <span>Clothing mAP</span>
+        </div>
+        <div class="metric metric-count" data-metric="count" data-value="4147">
+          <div class="metric-ring" aria-hidden="true">
+            <svg viewBox="0 0 100 100">
+              <circle class="ring-track" cx="50" cy="50" r="45"></circle>
+              <circle class="ring-value" cx="50" cy="50" r="45"></circle>
+            </svg>
+            <strong>4,147</strong>
+          </div>
+          <div class="metric-bar-wrap"><div class="metric-bar"></div></div>
+          <span>Training images</span>
+        </div>
       </div>
     </section>
-    <section class="case-section">
+    <section class="case-section" id="samples">
       <h2>Work samples</h2>
       <div class="gallery">
         <figure>
-          <img src="../assets/projects/footprint/dashboard-results.jpg" alt="FOOTPRINT dashboard with attribute filters and detection results" />
-          <figcaption>Attribute search dashboard — filter by hair, top, and bottom traits</figcaption>
+          <img src="../assets/projects/footprint/dashboard-results.jpg" alt="Attribute search dashboard" />
+          <figcaption>Attribute search dashboard — hair, top, and bottom filters</figcaption>
         </figure>
         <figure>
-          <img src="../assets/projects/footprint/upload-queue.jpg" alt="Upload queue section for YouTube video processing" />
-          <figcaption>Upload pipeline — YouTube ingest, speed modes, queue &amp; history</figcaption>
+          <img src="../assets/projects/footprint/upload-queue.jpg" alt="Upload queue" />
+          <figcaption>Upload pipeline — ingest, speed modes, queue &amp; history</figcaption>
         </figure>
         <figure>
-          <img src="../assets/projects/footprint/attributes-detected.jpg" alt="Person detected with hair clothing and pants attributes labeled" />
-          <figcaption>Realtime attribute tagging from body-cam style footage</figcaption>
+          <img src="../assets/projects/footprint/attributes-detected.jpg" alt="Detected attributes" />
+          <figcaption>Realtime attribute tagging on footage</figcaption>
         </figure>
         <figure>
-          <img src="../assets/projects/footprint/roboflow-dataset.jpg" alt="Roboflow dataset grid with thousands of annotated person images" />
-          <figcaption>Roboflow dataset — 4,147 annotated training images</figcaption>
+          <img src="../assets/projects/footprint/roboflow-dataset.jpg" alt="Roboflow dataset" />
+          <figcaption>Roboflow dataset — 4,147 annotated images</figcaption>
         </figure>
         <figure>
-          <img src="../assets/projects/footprint/model-metrics.jpg" alt="YOLOv11s hair color and clothing detection metrics table" />
-          <figcaption>Model metrics — hair &amp; clothing precision / recall / mAP</figcaption>
+          <img src="../assets/projects/footprint/model-metrics.jpg" alt="Model metrics" />
+          <figcaption>Model metrics — precision / recall / mAP</figcaption>
         </figure>
         <figure>
-          <img src="../assets/projects/footprint/team-presentation.jpg" alt="Team presenting FOOTPRINT at Wayne State University" />
-          <figcaption>Presented at Wayne State University with the FOOTPRINT team</figcaption>
+          <img src="../assets/projects/footprint/team-presentation.jpg" alt="Team presentation" />
+          <figcaption>Presented at Wayne State University</figcaption>
         </figure>
       </div>
+    </section>
+    <section class="case-section">
       <div class="case-actions">
-        <a class="btn signal" href="https://github.com/akrmDev/Missing-Person-App" target="_blank" rel="noopener noreferrer">View on GitHub</a>
-        <a class="btn quiet dark" href="../index.html#projects">All projects</a>
+        <a class="btn signal" href="https://github.com/akrmDev/Missing-Person-App" target="_blank" rel="noopener noreferrer">View source on GitHub</a>
+        <a class="btn quiet dark" href="../index.html#projects">Back to projects</a>
       </div>
     </section>
   </article>

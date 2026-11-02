@@ -1,6 +1,6 @@
-# Akram Ali — Ice Harbor Portfolio
+# Akram Ali — Portfolio (Noir Signal)
 
-Personal portfolio site for **Akram Ali** (Ice Harbor design). Static HTML/CSS/JS with project case studies, resume, and assets.
+Personal portfolio for **Akram Ali**, Software Engineer. Static HTML/CSS/JS with project case studies, resume, and assets. Dark cinematic **Noir Signal** design with Version 2 content hierarchy (software applications first, then data & analytics, then professional web work).
 
 ## Live site
 
@@ -14,5 +14,5 @@ Published with **GitHub Pages** from this repository:
 Open `index.html` in a browser, or serve the repo root:
 
 ```bash
-npx --yes serve .
+python3 -m http.server 5173
 ```

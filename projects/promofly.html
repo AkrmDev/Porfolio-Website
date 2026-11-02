@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PROMOFLY — Akram Ali</title>
-  <meta name="description" content="PROMOFLY — social publishing app in progress for scheduling posts across major platforms from one dashboard." />
+  <title>PROMOFLY — Software Case Study | Akram Ali</title>
+  <meta name="description" content="PROMOFLY — full-stack social publishing app with React, Firebase, Node.js, and platform API integrations. In progress." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;600;700&family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Syne:wght@500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../styles.css" />
 </head>
 <body>
@@ -15,9 +15,7 @@
   <nav class="topnav" aria-label="Primary" data-nav>
     <a class="topnav-brand" href="../index.html">Akram Ali</a>
     <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav-panel">
-      <span class="nav-toggle-box" aria-hidden="true">
-        <span></span><span></span><span></span>
-      </span>
+      <span class="nav-toggle-box" aria-hidden="true"><span></span><span></span><span></span></span>
       <span class="nav-toggle-label">Menu</span>
     </button>
     <div class="topnav-panel" id="primary-nav-panel">
@@ -33,35 +31,70 @@
       </div>
     </div>
   </nav>
+
+  <div class="case-cover">
+    <img src="../assets/projects/promofly.jpg" alt="Promofly marketing banner" />
+  </div>
+
   <article class="case">
-    <p class="eyebrow">Software · Sep 2025 – Present · In progress</p>
-    <h1>PROMOFLY</h1>
-    <p class="case-lead">A social publishing app I’m building so creators can plan and post to Instagram, TikTok, X, LinkedIn, Facebook, and YouTube from one place. The product is still in progress — features and polish are actively under construction.</p>
-    <ul class="tags">
-      <li>React</li><li>Firebase</li><li>Node.js</li><li>Express</li><li>Twitter API</li>
-    </ul>
-    <div class="case-actions early">
-      <a class="btn signal" href="https://promptly-4f67d.web.app/" target="_blank" rel="noopener noreferrer">Visit live app</a>
+    <div class="case-intro">
+      <p class="eyebrow">Full Stack · Sep 2025 – Present · In progress</p>
+      <h1>PROMOFLY</h1>
+      <p class="case-lead">A social publishing application for scheduling and posting to Instagram, TikTok, X, LinkedIn, Facebook, and YouTube from one dashboard. Currently in active development.</p>
+      <ul class="tags">
+        <li>React</li><li>Firebase</li><li>Node.js</li><li>Express</li><li>Platform APIs</li>
+      </ul>
+      <div class="case-actions early">
+        <a class="btn signal" href="https://promptly-4f67d.web.app/" target="_blank" rel="noopener noreferrer">Visit live app</a>
+      </div>
     </div>
 
-    <img class="case-hero" src="../assets/projects/promofly.jpg" alt="Promofly — One App. All Socials." />
+    <nav class="case-progress" aria-label="Case study sections">
+      <a href="#overview">Overview</a>
+      <a href="#problem">Problem</a>
+      <a href="#role">Role</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#stack">Stack</a>
+      <a href="#challenges">Challenges</a>
+      <a href="#results">Results</a>
+    </nav>
 
-    <section class="case-section">
-      <h2>What it is</h2>
-      <p>Promofly is meant to replace hopping between six social apps. The goal is a single dashboard where you write once, schedule ahead, and publish to multiple networks — with captions that fit each platform and a simple view of what’s already posted.</p>
+    <section class="case-section" id="overview">
+      <h2>Overview</h2>
+      <p>Promofly consolidates multi-network posting into a single web app so creators can plan content, schedule ahead, and publish without switching between separate social tools.</p>
     </section>
-    <section class="case-section">
-      <h2>Where it stands</h2>
-      <p>Core pieces are in place: a React front end, Firebase for accounts and storage, and server integrations for publishing. Scheduling, multi-platform posting, captions, and analytics are being built and refined — this is a work-in-progress product, not a finished launch with published usage stats.</p>
+    <section class="case-section" id="problem">
+      <h2>Problem</h2>
+      <p>Social workflows are fragmented across separate logins, caption formats, and schedulers. Teams need authentication, storage, API publishing, and a single coherent interface in one product.</p>
     </section>
-    <section class="case-section">
-      <h2>Stack</h2>
+    <section class="case-section" id="role">
+      <h2>My role</h2>
+      <p>Designing and implementing the full stack: React client for navigation and publishing flows, Firebase for auth and persistence, Node/Express services for outbound platform APIs, and iterative product work toward scheduling and multi-network publish.</p>
+    </section>
+    <section class="case-section" id="architecture">
+      <h2>Architecture</h2>
+      <p>Browser client talks to Firebase for identity and stored content state. Server routes wrap third-party social APIs so tokens and publish calls stay off the client where possible. The hosted build on Firebase Hosting is the current deployment surface while features land incrementally.</p>
+    </section>
+    <section class="case-section" id="stack">
+      <h2>Tech stack</h2>
       <ul class="badges">
-        <li>React</li><li>Firebase</li><li>Node.js</li><li>Express</li><li>Twitter API</li>
+        <li>React</li><li>Firebase Auth &amp; storage</li><li>Node.js</li><li>Express</li><li>Twitter / platform APIs</li>
       </ul>
+    </section>
+    <section class="case-section" id="challenges">
+      <h2>Technical challenges &amp; solutions</h2>
+      <ul>
+        <li><strong>Multi-platform APIs:</strong> normalize auth and publish flows behind server routes instead of hard-coding each network into the UI.</li>
+        <li><strong>Auth + persistence:</strong> Firebase for signup/login and durable user data without standing up a custom auth service first.</li>
+        <li><strong>Incremental delivery:</strong> ship a live build while scheduling, captions, and analytics continue to expand.</li>
+      </ul>
+    </section>
+    <section class="case-section" id="results">
+      <h2>Results</h2>
+      <p>Delivered a working full-stack foundation with authenticated users, a React application interface, Firebase backend services, and API-backed publishing paths. Additional features remain in progress.</p>
       <div class="case-actions">
-        <a class="btn signal" href="https://promptly-4f67d.web.app/" target="_blank" rel="noopener noreferrer">Visit live app</a>
-        <a class="btn quiet dark" href="../index.html#projects">All projects</a>
+        <a class="btn signal" href="https://promptly-4f67d.web.app/" target="_blank" rel="noopener noreferrer">Open live app</a>
+        <a class="btn quiet dark" href="../index.html#projects">Back to projects</a>
       </div>
     </section>
   </article>

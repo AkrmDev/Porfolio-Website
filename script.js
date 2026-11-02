@@ -176,7 +176,7 @@
     metrics.forEach((m) => metricObserver.observe(m));
   })();
 
-  /* Case study sticky mini-nav active state */
+  /* Case study sticky mini-nav — no history spam + auto-scroll active tab */
   (() => {
     const progress = document.querySelector(".case-progress");
     if (!progress) return;
@@ -191,15 +191,50 @@
       })
       .filter(Boolean);
 
-    if (!sections.length || reduceMotion) {
-      if (links[0]) links[0].classList.add("is-active");
-    }
+    const clearHash = () => {
+      if (!window.location.hash) return;
+      const url = window.location.pathname + window.location.search;
+      window.history.replaceState(null, "", url);
+    };
+
+    const scrollTabIntoView = (link) => {
+      if (!link) return;
+      const behavior = reduceMotion ? "auto" : "smooth";
+      link.scrollIntoView({ inline: "center", block: "nearest", behavior });
+    };
 
     const setActive = (id) => {
+      let active = null;
       links.forEach((link) => {
-        link.classList.toggle("is-active", link.getAttribute("href") === `#${id}`);
+        const on = link.getAttribute("href") === `#${id}`;
+        link.classList.toggle("is-active", on);
+        if (on) active = link;
       });
+      scrollTabIntoView(active);
     };
+
+    links.forEach((link) => {
+      link.addEventListener("click", (event) => {
+        const id = link.getAttribute("href").slice(1);
+        const section = document.getElementById(id);
+        if (!section) return;
+        event.preventDefault();
+        section.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+        setActive(id);
+        clearHash();
+        window.history.replaceState(null, "", window.location.pathname + window.location.search);
+      });
+    });
+
+    /* Drop any deep-link hash so Back leaves the case page in one step */
+    clearHash();
+
+    if (!sections.length || reduceMotion) {
+      if (links[0]) {
+        links[0].classList.add("is-active");
+        scrollTabIntoView(links[0]);
+      }
+    }
 
     const sectionObserver = new IntersectionObserver(
       (entries) => {

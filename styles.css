@@ -33,7 +33,7 @@ a { color: var(--signal); }
   animation: wash 14s ease-in-out infinite alternate;
 }
 
-/* Hero */
+/* Hero — full portrait visible on every screen (no face crop) */
 .hero {
   position: relative;
   min-height: 100svh;
@@ -41,32 +41,87 @@ a { color: var(--signal); }
   align-items: end;
   overflow: hidden;
   color: #f5fafc;
+  background: #0b1f3a;
 }
 
 .hero-visual {
   position: absolute;
   inset: 0;
-  background: #0b1f3a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(80% 70% at 50% 40%, #1a3555 0%, #0b1f3a 70%);
 }
 .hero-visual img {
-  width: 100%;
-  height: 100%;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
   object-fit: contain;
   object-position: center center;
-  animation: floatImg 18s ease-in-out infinite alternate;
+  animation: none;
 }
 .hero-wash {
   position: absolute;
   inset: 0;
+  pointer-events: none;
   background:
-    linear-gradient(100deg, rgba(11, 31, 58, 0.88) 0%, rgba(11, 31, 58, 0.45) 50%, rgba(11, 31, 58, 0.2) 100%),
-    linear-gradient(0deg, rgba(11, 31, 58, 0.7), transparent 42%);
+    linear-gradient(180deg, rgba(11, 31, 58, 0.15) 0%, transparent 28%, transparent 48%, rgba(11, 31, 58, 0.82) 100%);
 }
 .hero-copy {
   position: relative;
   z-index: 1;
   padding: clamp(2rem, 6vw, 4.5rem);
   max-width: 40rem;
+}
+
+/* Phones / narrow: full-height stage, image contained so whole photo reads */
+@media (max-width: 899px) {
+  .hero-visual img {
+    max-height: 100svh;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+}
+
+/* Tablets & desktops: copy left, portrait panel right — image still fully visible */
+@media (min-width: 900px) {
+  .hero {
+    grid-template-columns: minmax(22rem, 1fr) minmax(22rem, 48vw);
+    align-items: stretch;
+  }
+  .hero-visual {
+    position: relative;
+    grid-column: 2;
+    grid-row: 1;
+    inset: auto;
+    min-height: 100svh;
+    padding: clamp(1rem, 3vw, 2.5rem);
+  }
+  .hero-visual img {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+  .hero-wash {
+    background:
+      linear-gradient(90deg, rgba(11, 31, 58, 0.35) 0%, transparent 28%),
+      linear-gradient(180deg, transparent 60%, rgba(11, 31, 58, 0.25) 100%);
+  }
+  .hero-copy {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: end;
+    max-width: none;
+    padding: clamp(2.5rem, 5vw, 4.5rem);
+    background:
+      radial-gradient(700px 420px at 20% 80%, rgba(126, 182, 217, 0.18), transparent 60%),
+      linear-gradient(180deg, #0b1f3a 0%, #102744 100%);
+  }
 }
 .brand {
   margin: 0 0 1rem;
@@ -131,6 +186,10 @@ a { color: var(--signal); }
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--line);
 }
+.topnav-links,
+.topnav-actions {
+  display: contents;
+}
 .topnav a {
   font-family: var(--font-display);
   font-size: 0.78rem;
@@ -148,6 +207,44 @@ a { color: var(--signal); }
   padding: 0.45rem 0.8rem;
 }
 .nav-resume:hover { background: var(--signal); color: #fff !important; }
+
+@media (max-width: 720px) {
+  .topnav {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    gap: 0.7rem;
+    padding: 0.75rem 1rem 0.85rem;
+  }
+  .topnav-links,
+  .topnav-actions {
+    display: grid;
+    width: 100%;
+    justify-items: center;
+    align-items: center;
+  }
+  .topnav-links {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.35rem 0.4rem;
+  }
+  .topnav-actions {
+    grid-template-columns: repeat(2, minmax(0, max-content));
+    justify-content: center;
+    gap: 0.75rem 1.1rem;
+  }
+  .topnav-links a,
+  .topnav-actions a:not(.nav-resume) {
+    text-align: center;
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+  }
+  .nav-resume {
+    margin-left: 0;
+    justify-self: center;
+    padding: 0.42rem 0.75rem;
+    font-size: 0.72rem;
+  }
+}
 
 /* Sections */
 .band {

@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PROMOFLY — Akram Ali</title>
-  <meta name="description" content="PROMOFLY — SaaS social publisher to schedule and post to Instagram, TikTok, X, LinkedIn, Facebook, and YouTube from one dashboard." />
+  <meta name="description" content="PROMOFLY — social publishing app in progress for scheduling posts across major platforms from one dashboard." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;600;700&family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -13,43 +13,37 @@
 <body>
   <div class="atmosphere" aria-hidden="true"></div>
   <nav class="topnav" aria-label="Primary">
-    <a href="../index.html">Home</a>
-    <a href="../index.html#projects">Projects</a>
-    <a href="../index.html#experience">Experience</a>
-    <a href="../index.html#skills">Skills</a>
-    <a href="../index.html#about">Education</a>
-    <a href="../index.html#contact">Contact</a>
-    <a class="nav-resume" href="../resume.pdf" download>Download Resume</a>
+    <div class="topnav-links">
+      <a href="../index.html">Home</a>
+      <a href="../index.html#projects">Projects</a>
+      <a href="../index.html#experience">Experience</a>
+      <a href="../index.html#skills">Skills</a>
+    </div>
+    <div class="topnav-actions">
+      <a href="../index.html#contact">Contact</a>
+      <a class="nav-resume" href="../resume.pdf" download>Download Resume</a>
+    </div>
   </nav>
   <article class="case">
-    <p class="eyebrow">Software · Sep 2025 – Present · Live</p>
+    <p class="eyebrow">Software · Sep 2025 – Present · In progress</p>
     <h1>PROMOFLY</h1>
-    <p class="case-lead">SaaS social publisher — schedule weeks ahead and auto-publish to Instagram, TikTok, X, LinkedIn, Facebook, and YouTube from one dashboard.</p>
+    <p class="case-lead">A social publishing app I’m building so creators can plan and post to Instagram, TikTok, X, LinkedIn, Facebook, and YouTube from one place. The product is still in progress — features and polish are actively under construction.</p>
     <ul class="tags">
       <li>React</li><li>Firebase</li><li>Node.js</li><li>Express</li><li>Twitter API</li>
     </ul>
     <div class="case-actions early">
-      <a class="btn signal" href="https://promptly-4f67d.web.app/" target="_blank" rel="noopener">Visit live app</a>
+      <a class="btn signal" href="https://promptly-4f67d.web.app/" target="_blank" rel="noopener noreferrer">Visit live app</a>
     </div>
 
     <img class="case-hero" src="../assets/projects/promofly.jpg" alt="Promofly — One App. All Socials." />
 
     <section class="case-section">
-      <h2>Challenge</h2>
-      <p>Creators and small teams juggle Instagram, TikTok, X, LinkedIn, Facebook, and YouTube with fragmented tools for login, scheduling, captions, and analytics. The goal was one coherent product for planning and publishing without leaving the app.</p>
+      <h2>What it is</h2>
+      <p>Promofly is meant to replace hopping between six social apps. The goal is a single dashboard where you write once, schedule ahead, and publish to multiple networks — with captions that fit each platform and a simple view of what’s already posted.</p>
     </section>
     <section class="case-section">
-      <h2>Solution</h2>
-      <p>Built a React frontend with Firebase auth and storage, plus Node/Express integrations so users can schedule posts weeks ahead, auto-publish, generate AI captions per platform, review unified analytics, and one-click publish across six networks.</p>
-    </section>
-    <section class="case-section">
-      <h2>Outcomes</h2>
-      <div class="metrics">
-        <div class="metric"><strong>6</strong><span>Platforms in one dashboard</span></div>
-        <div class="metric"><strong>10k+</strong><span>Posts published</span></div>
-        <div class="metric"><strong>500+</strong><span>Creators</span></div>
-        <div class="metric"><strong>~3 min</strong><span>To post across networks</span></div>
-      </div>
+      <h2>Where it stands</h2>
+      <p>Core pieces are in place: a React front end, Firebase for accounts and storage, and server integrations for publishing. Scheduling, multi-platform posting, captions, and analytics are being built and refined — this is a work-in-progress product, not a finished launch with published usage stats.</p>
     </section>
     <section class="case-section">
       <h2>Stack</h2>
@@ -57,10 +51,11 @@
         <li>React</li><li>Firebase</li><li>Node.js</li><li>Express</li><li>Twitter API</li>
       </ul>
       <div class="case-actions">
-        <a class="btn signal" href="https://promptly-4f67d.web.app/" target="_blank" rel="noopener">Visit live app</a>
+        <a class="btn signal" href="https://promptly-4f67d.web.app/" target="_blank" rel="noopener noreferrer">Visit live app</a>
         <a class="btn quiet dark" href="../index.html#projects">All projects</a>
       </div>
     </section>
   </article>
+  <script src="../script.js"></script>
 </body>
 </html>

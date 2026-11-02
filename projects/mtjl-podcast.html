@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MTJL Podcast — Akram Ali</title>
-  <meta name="description" content="MTJL Podcast (More Than Just Luck) — podcast site for Greg Wier with episode grid and YouTube embeds, built on Webflow." />
+  <meta name="description" content="MTJL Podcast — website for More Than Just Luck, with episodes, guests, and contact info, built on Webflow." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;600;700&family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -13,50 +13,54 @@
 <body>
   <div class="atmosphere" aria-hidden="true"></div>
   <nav class="topnav" aria-label="Primary">
-    <a href="../index.html">Home</a>
-    <a href="../index.html#projects">Projects</a>
-    <a href="../index.html#experience">Experience</a>
-    <a href="../index.html#skills">Skills</a>
-    <a href="../index.html#about">Education</a>
-    <a href="../index.html#contact">Contact</a>
-    <a class="nav-resume" href="../resume.pdf" download>Download Resume</a>
+    <div class="topnav-links">
+      <a href="../index.html">Home</a>
+      <a href="../index.html#projects">Projects</a>
+      <a href="../index.html#experience">Experience</a>
+      <a href="../index.html#skills">Skills</a>
+    </div>
+    <div class="topnav-actions">
+      <a href="../index.html#contact">Contact</a>
+      <a class="nav-resume" href="../resume.pdf" download>Download Resume</a>
+    </div>
   </nav>
   <article class="case">
     <p class="eyebrow">Webflow · Live</p>
     <h1>MTJL Podcast</h1>
-    <p class="case-lead">More Than Just Luck — Greg Wier’s podcast site for raw conversations about failure, betrayal, and becoming who you say you want to be.</p>
+    <p class="case-lead">The website for More Than Just Luck — a podcast of honest conversations about setbacks and growth. Listeners can find episodes, meet guests, watch clips, and get in touch with the host.</p>
     <ul class="tags"><li>Webflow</li><li>CMS</li><li>Podcast</li><li>Responsive Design</li></ul>
     <div class="case-actions early">
-      <a class="btn signal" href="https://mtjlpodcast.com/" target="_blank" rel="noopener">Visit site</a>
+      <a class="btn signal" href="https://mtjlpodcast.com/" target="_blank" rel="noopener noreferrer">Visit site</a>
     </div>
 
     <img class="case-hero" src="../assets/projects/mtjl-podcast.jpg" alt="MTJL Podcast — More Than Just Luck" />
 
     <section class="case-section">
       <h2>Overview</h2>
-      <p>MTJL is positioned as unfiltered conversation — not soft self-help. The live site surfaces the show’s scale (35+ episodes, 19 guests, 38+ hours), an episode grid with guests, YouTube embeds, and contact paths for booking and press.</p>
+      <p>The show needed a home base that feels bold and easy to browse — not a generic podcast template. I built a Webflow site that introduces the host, shows the episode library, and makes watching or reaching out straightforward.</p>
     </section>
     <section class="case-section">
-      <h2>What the site covers</h2>
+      <h2>What visitors can do on the site</h2>
       <ul>
-        <li>Brand positioning for raw, unfiltered guest conversations</li>
-        <li>Stats strip — 35+ episodes, 19 guests, 38+ hours of content</li>
-        <li>Episode grid with guest features and YouTube embeds</li>
-        <li>Contact — contact@MTJLpodcast.com / Info@MoreThanJustLuck.com, plus GregWier.com book link</li>
+        <li>Understand what the podcast is about in a few seconds</li>
+        <li>Browse episodes and see who appeared as a guest</li>
+        <li>Watch episode video embeds without leaving the site</li>
+        <li>Find contact info for bookings, press, or questions</li>
       </ul>
     </section>
     <section class="case-section">
       <h2>Deliverables</h2>
       <ul>
-        <li>Responsive podcast marketing and content pages</li>
-        <li>CMS structure for episodes, guests, and updates</li>
-        <li>Production launch at mtjlpodcast.com</li>
+        <li>Responsive marketing and content pages</li>
+        <li>Editable structure for new episodes and guests</li>
+        <li>Live site at mtjlpodcast.com</li>
       </ul>
       <div class="case-actions">
-        <a class="btn signal" href="https://mtjlpodcast.com/" target="_blank" rel="noopener">Visit site</a>
+        <a class="btn signal" href="https://mtjlpodcast.com/" target="_blank" rel="noopener noreferrer">Visit site</a>
         <a class="btn quiet dark" href="../index.html#projects">All projects</a>
       </div>
     </section>
   </article>
+  <script src="../script.js"></script>
 </body>
 </html>

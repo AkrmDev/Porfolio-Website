@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Website Performance Analysis — Akram Ali</title>
-  <meta name="description" content="Website Performance Analysis — Grammy.com / RecordingAcademy.com traffic study with Python, Pandas, Plotly, and Dash." />
+  <meta name="description" content="Website Performance Analysis for The Recording Academy — Grammy.com and recordingacademy.com after the site split, with awards-week insights and AMA comparison." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;600;700&family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -13,44 +13,60 @@
 <body>
   <div class="atmosphere" aria-hidden="true"></div>
   <nav class="topnav" aria-label="Primary">
-    <a href="../index.html">Home</a>
-    <a href="../index.html#projects">Projects</a>
-    <a href="../index.html#experience">Experience</a>
-    <a href="../index.html#skills">Skills</a>
-    <a href="../index.html#about">Education</a>
-    <a href="../index.html#contact">Contact</a>
-    <a class="nav-resume" href="../resume.pdf" download>Download Resume</a>
+    <div class="topnav-links">
+      <a href="../index.html">Home</a>
+      <a href="../index.html#projects">Projects</a>
+      <a href="../index.html#experience">Experience</a>
+      <a href="../index.html#skills">Skills</a>
+    </div>
+    <div class="topnav-actions">
+      <a href="../index.html#contact">Contact</a>
+      <a class="nav-resume" href="../resume.pdf" download>Download Resume</a>
+    </div>
   </nav>
   <article class="case">
     <p class="eyebrow">Analytics · Mar 2024 – Apr 2024</p>
     <h1>Website Performance Analysis</h1>
-    <p class="case-lead">Analyzed post-split traffic data from Grammy.com and RecordingAcademy.com to uncover engagement gaps.</p>
+    <p class="case-lead">A data project for The Recording Academy after they split Grammy.com and recordingacademy.com into two sites for different audiences — so the team could see how each site performed, how people engaged, and how that compared with the American Music Awards site.</p>
     <ul class="tags">
       <li>Python</li><li>Pandas</li><li>Plotly</li><li>Dash</li><li>NumPy</li>
     </ul>
 
-    <img class="case-hero" src="../assets/projects/placeholders/website-performance.svg" alt="" />
+    <img class="case-hero" src="../assets/projects/website-performance.jpg" alt="Website Performance — Recording Academy / Grammy analytics charts" />
 
     <section class="case-section">
-      <h2>Challenge</h2>
-      <p>After a site split, teams needed clarity on session behavior, bounce trends, and where retention was leaking.</p>
+      <h2>Overview</h2>
+      <p>When one organization runs two websites, it is hard to tell which is doing well without looking at the numbers side by side. I pulled daily web analytics for both Recording Academy sites and built charts that show visitors, pageviews, sessions, bounce rate, and average time on site — including special flags for Awards Week and Awards Night.</p>
     </section>
     <section class="case-section">
-      <h2>Solution</h2>
-      <p>Used Python (Pandas, NumPy) with Plotly/Dash to visualize session metrics and bounce patterns, then packaged UX recommendations to improve retention and page depth.</p>
+      <h2>What this analysis covers</h2>
+      <ul>
+        <li>How Grammy.com and recordingacademy.com each performed after the split</li>
+        <li>Engagement trends over time (who stays, who leaves quickly)</li>
+        <li>Traffic and behavior around major marketing moments — Awards Week and Awards Night</li>
+        <li>A simple benchmark against the American Music Awards (AMA) competitor site</li>
+      </ul>
     </section>
     <section class="case-section">
-      <h2>Outcomes</h2>
-      <div class="metrics">
-        <div class="metric"><strong>Sessions</strong><span>Metrics visualized</span></div>
-        <div class="metric"><strong>Bounce</strong><span>Trend diagnosis</span></div>
-        <div class="metric"><strong>UX</strong><span>Retention recommendations</span></div>
-      </div>
+      <h2>Key takeaways</h2>
+      <p>In the April–June 2023 window reviewed for the project:</p>
+      <ul>
+        <li>The Grammy site drew more traffic and had a lower bounce rate</li>
+        <li>The AMA site did better on pages per session and how long people stayed</li>
+        <li>Practical next step for Grammy.com: improve how long visits last and how many pages people open</li>
+        <li>Practical next step for AMA: grow overall traffic</li>
+      </ul>
+      <p>These findings are directional for that timeframe — not a full-year audit of either brand.</p>
+    </section>
+    <section class="case-section">
+      <h2>How it was built</h2>
+      <p>Python with Pandas/NumPy for cleaning and comparing the daily metrics, and Plotly/Dash to turn the results into interactive charts stakeholders could explore.</p>
       <div class="case-actions">
-        <a class="btn signal" href="https://github.com/AkrmDev/Website-Performance" target="_blank" rel="noopener">View source</a>
+        <a class="btn signal" href="https://github.com/AkrmDev/Website-Performance" target="_blank" rel="noopener noreferrer">View on GitHub</a>
         <a class="btn quiet dark" href="../index.html#projects">All projects</a>
       </div>
     </section>
   </article>
+  <script src="../script.js"></script>
 </body>
 </html>

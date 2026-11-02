@@ -990,34 +990,150 @@ main { position: relative; }
 }
 
 /* ========== SKILLS ========== */
-.skill-groups {
+.skills-lead {
+  margin: -0.85rem 0 1.75rem;
+  max-width: 42ch;
+  color: var(--muted);
+  font-size: 1.02rem;
+  line-height: 1.55;
+}
+.skill-board {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1.5rem 1.25rem;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem 1.15rem;
 }
-@media (max-width: 900px) {
-  .skill-groups { grid-template-columns: 1fr 1fr; }
+@media (max-width: 760px) {
+  .skill-board { grid-template-columns: 1fr; }
 }
-@media (max-width: 520px) {
-  .skill-groups { grid-template-columns: 1fr; }
+.skill-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-height: 100%;
+  padding: 1.2rem 1.25rem 1.35rem 1.35rem;
+  background:
+    linear-gradient(145deg, rgba(255, 77, 77, 0.05) 0%, transparent 42%),
+    var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  overflow: hidden;
+  transition: border-color 0.3s ease, transform 0.35s var(--ease), box-shadow 0.35s ease;
 }
-.skill-groups h3 {
-  margin: 0 0 0.75rem;
+.skill-panel::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, var(--coral), transparent 78%);
+  opacity: 0.55;
+  transition: opacity 0.3s ease;
+}
+.skill-panel:hover {
+  border-color: rgba(255, 77, 77, 0.35);
+  transform: translateY(-3px);
+  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(255, 77, 77, 0.06);
+}
+.skill-panel:hover::before { opacity: 1; }
+.skill-panel__head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+}
+.skill-panel__index {
+  flex: 0 0 auto;
   font-family: var(--font-display);
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--dim);
+  letter-spacing: 0.14em;
+  color: var(--coral);
 }
-.skill-groups .badges li {
+.skill-panel h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 1.6vw, 1.15rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
   color: var(--ink);
-  background: rgba(24, 24, 28, 0.9);
-  border-color: var(--line-strong);
+  line-height: 1.25;
 }
-.skill-groups .badges li:hover {
-  border-color: rgba(255, 77, 77, 0.4);
+.skill-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.skill-chips li {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.42rem 0.65rem;
+  color: var(--ink);
+  background: var(--elevated);
+  border: 1px solid var(--line-strong);
+  border-radius: 2px;
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease, transform 0.25s var(--ease);
+}
+.skill-panel:hover .skill-chips li {
+  border-color: rgba(244, 242, 239, 0.22);
+}
+.skill-chips li:hover {
+  border-color: rgba(255, 77, 77, 0.55);
   color: #fff;
+  background: rgba(255, 77, 77, 0.12);
+  transform: translateY(-1px);
+}
+
+.band.visible .skill-panel {
+  animation: skill-panel-in 0.7s var(--ease) both;
+}
+.band.visible .skill-panel:nth-child(1) { animation-delay: 0.05s; }
+.band.visible .skill-panel:nth-child(2) { animation-delay: 0.12s; }
+.band.visible .skill-panel:nth-child(3) { animation-delay: 0.19s; }
+.band.visible .skill-panel:nth-child(4) { animation-delay: 0.26s; }
+@keyframes skill-panel-in {
+  from { opacity: 0; transform: translateY(0.85rem); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skill-panel,
+  .skill-chips li { transition: none; }
+  .skill-panel:hover { transform: none; }
+  .band.visible .skill-panel { animation: none; }
+}
+
+
+/* ========== EXPERIENCE DETAIL PAGES ========== */
+.exp-hero {
+  position: relative;
+  height: clamp(7rem, 18vw, 11rem);
+  overflow: hidden;
+  border-bottom: 1px solid var(--line);
+  background: linear-gradient(135deg, #0c0c0f 0%, #141018 45%, #1a1014 100%);
+}
+.exp-hero__glow {
+  position: absolute;
+  inset: -20% -10% auto auto;
+  width: min(28rem, 70vw);
+  height: min(28rem, 70vw);
+  background: radial-gradient(circle, rgba(255, 77, 77, 0.22) 0%, transparent 68%);
+  pointer-events: none;
+}
+.exp-case { padding-top: 0.5rem; }
+.exp-cta {
+  margin-top: 0.85rem;
+  align-self: flex-start;
+  position: relative;
+  z-index: 2;
+}
+.career-timeline li .exp-cta {
+  display: inline-flex;
 }
 
 /* ========== EDUCATION ========== */

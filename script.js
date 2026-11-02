@@ -1,6 +1,13 @@
 (() => {
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+  /* Auto-updating copyright year */
+  const year = String(new Date().getFullYear());
+  document.querySelectorAll("[data-year]").forEach((el) => {
+    el.textContent = year;
+  });
+
+
   /* External http(s) links → new tab + noopener */
   document.querySelectorAll('a[href^="http://"], a[href^="https://"]').forEach((link) => {
     try {

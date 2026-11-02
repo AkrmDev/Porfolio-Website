@@ -46,14 +46,13 @@
     revealTargets.forEach((el) => revealObserver.observe(el));
   }
 
-  /* Mobile burger — self-contained drawer (open via hamburger; close via X / backdrop / Esc / link) */
+  /* Mobile burger — self-contained drawer; close control is a real button hit target */
   (() => {
     const nav = document.querySelector("[data-nav]");
     if (!nav) return;
 
     const toggle = nav.querySelector(".nav-toggle");
     const panel = nav.querySelector(".topnav-panel");
-    const closeBtn = nav.querySelector(".drawer-close");
     if (!toggle || !panel) return;
 
     let backdrop = document.querySelector(".nav-backdrop");
@@ -68,43 +67,49 @@
     let lastFocus = null;
 
     const setOpen = (open) => {
-      if (!mq.matches && open) return;
+      if (open && !mq.matches) return;
       const wasOpen = nav.classList.contains("is-open");
+      if (open === wasOpen) return;
+
       nav.classList.toggle("is-open", open);
       toggle.setAttribute("aria-expanded", open ? "true" : "false");
       document.body.classList.toggle("nav-locked", open && mq.matches);
       backdrop.classList.toggle("is-visible", open && mq.matches);
       backdrop.hidden = !(open && mq.matches);
 
-      if (open && !wasOpen) {
+      if (open) {
         lastFocus = document.activeElement;
-        const focusTarget = closeBtn || panel.querySelector("a");
-        if (focusTarget) focusTarget.focus();
-      } else if (!open && wasOpen && lastFocus) {
-        lastFocus.focus();
+        const focusTarget = panel.querySelector("[data-drawer-close]") || panel.querySelector("a");
+        if (focusTarget) focusTarget.focus({ preventScroll: true });
+      } else if (lastFocus && typeof lastFocus.focus === "function") {
+        lastFocus.focus({ preventScroll: true });
         lastFocus = null;
       }
     };
 
-    toggle.addEventListener("click", () => {
+    toggle.addEventListener("click", (event) => {
+      event.preventDefault();
       if (!mq.matches) return;
       setOpen(true);
     });
 
-    if (closeBtn) {
-      closeBtn.addEventListener("click", () => setOpen(false));
-    }
+    /* Bind close on the button itself; icon has pointer-events: none */
+    panel.addEventListener("click", (event) => {
+      const closer = event.target.closest("[data-drawer-close]");
+      if (closer) {
+        event.preventDefault();
+        event.stopPropagation();
+        setOpen(false);
+        return;
+      }
+      const link = event.target.closest("a");
+      if (link && mq.matches) setOpen(false);
+    });
 
     backdrop.addEventListener("click", () => setOpen(false));
 
-    panel.querySelectorAll("a").forEach((link) => {
-      link.addEventListener("click", () => {
-        if (mq.matches) setOpen(false);
-      });
-    });
-
     document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") setOpen(false);
+      if (event.key === "Escape" && nav.classList.contains("is-open")) setOpen(false);
     });
 
     const onBreakpoint = () => {
@@ -192,120 +197,92 @@
     metrics.forEach((m) => metricObserver.observe(m));
   })();
 
-  /* Case progress — scroll-lerped sliding pill (no IntersectionObserver tab jumping) */
+  /* Case progress — fixed center highlight; track flicks so active tab sits in the middle */
   (() => {
     const progress = document.querySelector(".case-progress");
     if (!progress) return;
 
-    const track = progress.querySelector(".case-progress-track") || progress;
-    const pill = progress.querySelector(".case-progress-pill");
+    const windowEl = progress.querySelector(".case-progress-window");
+    const track = progress.querySelector(".case-progress-track");
+    const highlight = progress.querySelector(".case-progress-highlight");
     const links = [...progress.querySelectorAll("a[href^='#']")];
-    if (!links.length || !pill) return;
+    if (!windowEl || !track || !highlight || !links.length) return;
 
     const sections = links
       .map((link) => document.getElementById(link.getAttribute("href").slice(1)))
       .filter(Boolean);
     if (sections.length !== links.length) return;
 
-    let activeId = null;
+    let activeIndex = -1;
     let clicking = false;
     let ticking = false;
-    let pillX = 0;
-    let pillW = 0;
 
     const navOffset = () => {
       const nav = document.querySelector(".topnav");
       return (nav ? nav.offsetHeight : 60) + 12;
     };
 
-    const sectionTops = () =>
-      sections.map((section) => section.getBoundingClientRect().top + window.scrollY);
+    const centerTrackOn = (index, withFlick) => {
+      const link = links[index];
+      if (!link) return;
+      const winW = windowEl.clientWidth;
+      const target = winW / 2 - (link.offsetLeft + link.offsetWidth / 2);
+      highlight.style.setProperty("--case-tab-w", `${Math.ceil(link.offsetWidth)}px`);
 
-    const placePill = (x, w, immediate) => {
-      pillX = x;
-      pillW = w;
-      pill.style.width = `${w}px`;
-      if (immediate || reduceMotion) {
-        pill.style.transition = "none";
-        pill.style.transform = `translate3d(${x}px, -50%, 0)`;
+      if (withFlick && !reduceMotion) {
+        track.classList.add("is-flicking");
+        track.style.transform = `translate3d(${target}px, 0, 0)`;
+        window.setTimeout(() => track.classList.remove("is-flicking"), 180);
+      } else {
+        track.classList.remove("is-flicking");
+        track.style.transform = `translate3d(${target}px, 0, 0)`;
+      }
+    };
+
+    const setActiveIndex = (index, withFlick) => {
+      if (index < 0 || index >= links.length) return;
+      if (index === activeIndex) {
+        centerTrackOn(index, false);
         return;
       }
-      pill.style.transition = "transform 0.18s linear, width 0.18s linear";
-      pill.style.transform = `translate3d(${x}px, -50%, 0)`;
+      activeIndex = index;
+      links.forEach((link, i) => link.classList.toggle("is-active", i === index));
+      centerTrackOn(index, withFlick);
     };
 
-    const revealTab = (link) => {
-      if (!link) return;
-      const left = link.offsetLeft;
-      const right = left + link.offsetWidth;
-      const viewLeft = progress.scrollLeft;
-      const viewRight = viewLeft + progress.clientWidth;
-      const pad = 28;
-      if (left < viewLeft + pad) progress.scrollLeft = Math.max(0, left - pad);
-      else if (right > viewRight - pad) progress.scrollLeft = right - progress.clientWidth + pad;
-    };
-
-    const setActiveLabel = (id) => {
-      if (!id || id === activeId) return;
-      activeId = id;
-      let active = null;
-      links.forEach((link) => {
-        const on = link.getAttribute("href") === `#${id}`;
-        link.classList.toggle("is-active", on);
-        if (on) active = link;
-      });
-      revealTab(active);
-    };
-
-    const updateFromScroll = () => {
-      ticking = false;
-      if (clicking) return;
-
-      const tops = sectionTops();
+    const indexFromScroll = () => {
+      const tops = sections.map((section) => section.getBoundingClientRect().top + window.scrollY);
       const marker = window.scrollY + navOffset();
       let index = 0;
       for (let i = 0; i < tops.length; i += 1) {
         if (marker >= tops[i] - 1) index = i;
       }
-
-      const current = links[index];
-      const next = links[Math.min(index + 1, links.length - 1)];
-      const start = tops[index];
-      const end = index < tops.length - 1 ? tops[index + 1] : start + sections[index].offsetHeight;
-      const span = Math.max(1, end - start);
-      const t = Math.max(0, Math.min(1, (marker - start) / span));
-
-      const x1 = current.offsetLeft;
-      const w1 = current.offsetWidth;
-      const x2 = next.offsetLeft;
-      const w2 = next.offsetWidth;
-      const x = x1 + (x2 - x1) * t;
-      const w = w1 + (w2 - w1) * t;
-      placePill(x, w, false);
-      setActiveLabel(sections[index].id);
+      return index;
     };
 
     const onScroll = () => {
-      if (ticking) return;
+      if (ticking || clicking) return;
       ticking = true;
-      requestAnimationFrame(updateFromScroll);
+      requestAnimationFrame(() => {
+        ticking = false;
+        setActiveIndex(indexFromScroll(), true);
+      });
     };
 
-    links.forEach((link) => {
+    links.forEach((link, index) => {
       link.addEventListener("click", (event) => {
         const id = link.getAttribute("href").slice(1);
         const section = document.getElementById(id);
         if (!section) return;
         event.preventDefault();
         clicking = true;
-        setActiveLabel(id);
-        placePill(link.offsetLeft, link.offsetWidth, false);
+        setActiveIndex(index, true);
         const top = section.getBoundingClientRect().top + window.scrollY - navOffset();
         window.scrollTo({ top, behavior: reduceMotion ? "auto" : "smooth" });
         window.history.replaceState(null, "", window.location.pathname + window.location.search);
         window.setTimeout(() => {
           clicking = false;
-          updateFromScroll();
+          setActiveIndex(indexFromScroll(), false);
         }, reduceMotion ? 40 : 700);
       });
     });
@@ -314,14 +291,63 @@
       window.history.replaceState(null, "", window.location.pathname + window.location.search);
     }
 
-    placePill(links[0].offsetLeft, links[0].offsetWidth, true);
-    setActiveLabel(sections[0].id);
+    setActiveIndex(0, false);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", () => setActiveIndex(Math.max(0, activeIndex), false), { passive: true });
+  })();
+
+  /* Experience timeline — coral progress line + item reveal while scrolling */
+  (() => {
+    const wrap = document.querySelector("[data-timeline]");
+    if (!wrap) return;
+
+    const list = wrap.querySelector(".career-timeline") || wrap;
+    const items = [...list.querySelectorAll("li")];
+    let progressEl = wrap.querySelector(".timeline-progress");
+    if (!progressEl) {
+      progressEl = document.createElement("span");
+      progressEl.className = "timeline-progress";
+      progressEl.setAttribute("aria-hidden", "true");
+      wrap.prepend(progressEl);
+    }
+
+    if (reduceMotion) {
+      items.forEach((item) => item.classList.add("is-inview"));
+      progressEl.style.height = `${Math.max(0, list.offsetHeight - 8)}px`;
+      return;
+    }
+
+    const itemObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) entry.target.classList.add("is-inview");
+        });
+      },
+      { threshold: 0.35, rootMargin: "0px 0px -10% 0px" }
+    );
+    items.forEach((item) => itemObserver.observe(item));
+
+    let ticking = false;
+    const updateLine = () => {
+      ticking = false;
+      const rect = wrap.getBoundingClientRect();
+      const trackH = Math.max(0, list.offsetHeight - 8);
+      const start = rect.top + window.scrollY;
+      const end = start + trackH;
+      const view = window.scrollY + window.innerHeight * 0.55;
+      const raw = (view - start) / Math.max(1, end - start);
+      const pct = Math.max(0, Math.min(1, raw));
+      progressEl.style.height = `${pct * trackH}px`;
+    };
+
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(updateLine);
+    };
 
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", () => {
-      placePill(pillX || links[0].offsetLeft, pillW || links[0].offsetWidth, true);
-      updateFromScroll();
-    }, { passive: true });
-    updateFromScroll();
+    window.addEventListener("resize", onScroll, { passive: true });
+    updateLine();
   })();
 })();

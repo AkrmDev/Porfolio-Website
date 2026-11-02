@@ -46,37 +46,25 @@
     revealTargets.forEach((el) => revealObserver.observe(el));
   }
 
-  /* In-page section navigation — root fix for dead #anchor clicks */
+  /* In-page section navigation */
   const navOffset = () => {
-    const nav = document.querySelector(".topnav");
+    const nav = document.querySelector(".site-nav");
     return (nav ? nav.offsetHeight : 60) + 10;
   };
+
+  let closeSiteMenu = () => {};
 
   const scrollToId = (id, behavior) => {
     if (!id) return false;
     const target = document.getElementById(id);
     if (!target) return false;
-    document.body.classList.remove("nav-locked");
+    closeSiteMenu();
     const top = target.getBoundingClientRect().top + window.scrollY - navOffset();
     window.scrollTo({
       top: Math.max(0, top),
       behavior: behavior || (reduceMotion ? "auto" : "smooth"),
     });
     return true;
-  };
-
-  const closeDrawerIfOpen = () => {
-    const nav = document.querySelector("[data-nav]");
-    if (!nav || !nav.classList.contains("is-open")) return;
-    nav.classList.remove("is-open");
-    const toggle = nav.querySelector(".nav-toggle");
-    if (toggle) toggle.setAttribute("aria-expanded", "false");
-    document.body.classList.remove("nav-locked");
-    const backdrop = document.querySelector(".nav-backdrop");
-    if (backdrop) {
-      backdrop.classList.remove("is-visible");
-      backdrop.hidden = true;
-    }
   };
 
   document.addEventListener("click", (event) => {
@@ -104,7 +92,7 @@
     if (!document.getElementById(id)) return;
 
     event.preventDefault();
-    closeDrawerIfOpen();
+    closeSiteMenu();
     scrollToId(id);
     window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}#${id}`);
   });
@@ -117,67 +105,79 @@
     }
   });
 
-  /* Mobile burger — self-contained drawer; close control is a real button hit target */
+  /* Mobile menu — rebuilt: fixed overlay sibling, not nested in sticky nav */
   (() => {
-    const nav = document.querySelector("[data-nav]");
-    if (!nav) return;
+    const bar = document.querySelector("[data-site-nav]");
+    const menu = document.querySelector("[data-site-menu]");
+    const openBtn = document.querySelector("[data-site-menu-open]");
+    if (!bar || !menu || !openBtn) return;
 
-    const toggle = nav.querySelector(".nav-toggle");
-    const panel = nav.querySelector(".topnav-panel");
-    if (!toggle || !panel) return;
-
-    let backdrop = document.querySelector(".nav-backdrop");
-    if (!backdrop) {
-      backdrop = document.createElement("div");
-      backdrop.className = "nav-backdrop";
-      backdrop.hidden = true;
-      document.body.appendChild(backdrop);
-    }
-
+    const sheet = menu.querySelector(".site-menu__sheet");
     const mq = window.matchMedia("(max-width: 820px)");
     let lastFocus = null;
+    let open = false;
 
-    const setOpen = (open) => {
-      if (open && !mq.matches) return;
-      const wasOpen = nav.classList.contains("is-open");
-      if (open === wasOpen) return;
-
-      nav.classList.toggle("is-open", open);
-      toggle.setAttribute("aria-expanded", open ? "true" : "false");
-      document.body.classList.toggle("nav-locked", open && mq.matches);
-      backdrop.classList.toggle("is-visible", open && mq.matches);
-      backdrop.hidden = !(open && mq.matches);
+    const setOpen = (next) => {
+      if (next && !mq.matches) return;
+      if (next === open) return;
+      open = next;
 
       if (open) {
+        menu.hidden = false;
+        /* force reflow so the open transition plays */
+        void menu.offsetWidth;
+        menu.classList.add("is-open");
+        bar.classList.add("is-menu-open");
+        document.body.classList.add("nav-locked");
+        openBtn.setAttribute("aria-expanded", "true");
+        openBtn.setAttribute("aria-label", "Close menu");
         lastFocus = document.activeElement;
-        const focusTarget = panel.querySelector("[data-drawer-close]") || panel.querySelector("a");
-        if (focusTarget) focusTarget.focus({ preventScroll: true });
-      } else if (lastFocus && typeof lastFocus.focus === "function") {
-        lastFocus.focus({ preventScroll: true });
-        lastFocus = null;
+        const focusTarget = menu.querySelector("[data-site-menu-close].site-menu__x") || sheet?.querySelector("a");
+        window.setTimeout(() => focusTarget?.focus({ preventScroll: true }), 30);
+      } else {
+        menu.classList.remove("is-open");
+        bar.classList.remove("is-menu-open");
+        document.body.classList.remove("nav-locked");
+        openBtn.setAttribute("aria-expanded", "false");
+        openBtn.setAttribute("aria-label", "Open menu");
+        const hide = () => {
+          if (!open) menu.hidden = true;
+        };
+        if (reduceMotion) hide();
+        else window.setTimeout(hide, 420);
+        if (lastFocus && typeof lastFocus.focus === "function") {
+          lastFocus.focus({ preventScroll: true });
+          lastFocus = null;
+        }
       }
     };
 
-    toggle.addEventListener("click", (event) => {
+    closeSiteMenu = () => setOpen(false);
+
+    openBtn.addEventListener("click", (event) => {
       event.preventDefault();
       if (!mq.matches) return;
-      setOpen(true);
+      setOpen(!open);
     });
 
-    panel.addEventListener("click", (event) => {
-      const closer = event.target.closest("[data-drawer-close]");
-      if (closer) {
+    menu.addEventListener("click", (event) => {
+      if (event.target.closest("[data-site-menu-close]")) {
         event.preventDefault();
-        event.stopPropagation();
         setOpen(false);
+        return;
       }
-      /* in-page links are handled by the document click scroll helper above */
+      const link = event.target.closest("a[href]");
+      if (link) {
+        /* Same-page hash scroll closes via scrollToId; cross-page just close. */
+        window.setTimeout(() => setOpen(false), 0);
+      }
     });
-
-    backdrop.addEventListener("click", () => setOpen(false));
 
     document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape" && nav.classList.contains("is-open")) setOpen(false);
+      if (event.key === "Escape" && open) {
+        event.preventDefault();
+        setOpen(false);
+      }
     });
 
     const onBreakpoint = () => {
@@ -286,7 +286,7 @@
     let ticking = false;
 
     const navOffset = () => {
-      const nav = document.querySelector(".topnav");
+      const nav = document.querySelector(".site-nav");
       return (nav ? nav.offsetHeight : 60) + 12;
     };
 

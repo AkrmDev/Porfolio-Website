@@ -322,13 +322,14 @@
       centerTrackOn(index, withFlick);
     };
 
+    /* Activate a section as soon as it peeks into the viewport
+       (near the bottom edge — not only when it reaches the top under the nav). */
     const indexFromScroll = () => {
-      const tops = sections.map((section) => section.getBoundingClientRect().top + window.scrollY);
-      const marker = window.scrollY + navOffset();
+      const enterLine = Math.max(window.innerHeight - 12, 1);
       let index = 0;
-      for (let i = 0; i < tops.length; i += 1) {
-        if (marker >= tops[i] - 1) index = i;
-      }
+      sections.forEach((section, i) => {
+        if (section.getBoundingClientRect().top < enterLine) index = i;
+      });
       return index;
     };
 

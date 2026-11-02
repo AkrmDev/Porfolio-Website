@@ -691,7 +691,7 @@ main { position: relative; }
   position: relative;
   z-index: 2;
 }
-.card-links a {
+.card-links .card-btn {
   position: relative;
   z-index: 2;
 }
@@ -861,20 +861,28 @@ main { position: relative; }
 .card-links {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.85rem;
+  align-items: center;
+  gap: 0.65rem;
   margin-top: auto;
-  padding-top: 0.35rem;
+  padding-top: 0.55rem;
 }
-.card-links a {
-  font-family: var(--font-display);
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
+.card-btn {
+  min-height: 2.35rem;
+  padding: 0 0.9rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  text-decoration: none;
+}
+.card-links .btn.signal.card-btn {
+  color: #fff;
+}
+.card-links .btn.quiet.dark.card-btn {
+  color: var(--ink);
+}
+.card-links .btn.quiet.dark.card-btn:hover {
+  border-color: var(--coral);
   color: var(--coral);
 }
-.card-links a:hover { color: #ff7575; }
 
 /* ========== EXPERIENCE TIMELINE ========== */
 .timeline-wrap {

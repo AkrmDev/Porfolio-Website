@@ -819,15 +819,15 @@ main { position: relative; }
   position: absolute;
   left: 0.28rem;
   top: 0.35rem;
+  bottom: 0.35rem;
   width: 2px;
-  height: 0;
   margin-left: -0.5px;
   background: linear-gradient(180deg, var(--coral) 0%, rgba(255, 122, 122, 0.55) 100%);
+  transform: scaleY(0);
   transform-origin: top;
   pointer-events: none;
-  will-change: height;
+  will-change: transform;
   z-index: 0;
-  transition: none;
 }
 .career-timeline {
   position: relative;
@@ -1070,10 +1070,21 @@ main { position: relative; }
 }
 
 /* ========== CONTACT + FOOTER ========== */
+/* Enough runway so #contact can scroll under the fixed nav (last-section root cause). */
 .band.contact {
   text-align: left;
   border-top: 1px solid var(--line);
   margin-top: 1rem;
+  min-height: calc(100vh - 5.5rem);
+  scroll-margin-top: 5.5rem;
+}
+#projects,
+#experience,
+#skills,
+#about,
+#contact,
+#top {
+  scroll-margin-top: 5.5rem;
 }
 .band.contact > p {
   color: var(--muted);

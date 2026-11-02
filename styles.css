@@ -460,36 +460,47 @@ a:hover { color: #ff7575; }
     color: var(--ink);
   }
   .drawer-close {
-    display: inline-grid;
-    place-items: center;
-    width: 2.5rem;
-    height: 2.5rem;
+    position: relative;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 2.75rem;
+    height: 2.75rem;
+    margin: 0;
+    padding: 0;
     border: 1px solid var(--line-strong);
     background: var(--elevated);
     color: var(--ink);
     border-radius: 2px;
     cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
   }
-  .drawer-close span,
-  .drawer-close span::before {
+  .drawer-close-icon {
+    position: relative;
+    display: block;
+    width: 1rem;
+    height: 1rem;
+    pointer-events: none;
+  }
+  .drawer-close-icon::before,
+  .drawer-close-icon::after {
     content: "";
     position: absolute;
-    width: 0.95rem;
+    left: 0;
+    top: 50%;
+    width: 100%;
     height: 2px;
-    background: var(--ink);
+    background: currentColor;
   }
-  .drawer-close {
-    position: relative;
-  }
-  .drawer-close span {
-    transform: rotate(45deg);
-  }
-  .drawer-close span::before {
-    transform: rotate(-90deg);
-  }
+  .drawer-close-icon::before { transform: translateY(-50%) rotate(45deg); }
+  .drawer-close-icon::after { transform: translateY(-50%) rotate(-45deg); }
   .drawer-close:hover,
   .drawer-close:focus-visible {
     border-color: var(--coral);
+    color: var(--coral);
     outline: none;
   }
 
@@ -792,27 +803,66 @@ main { position: relative; }
 .card-links a:hover { color: #ff7575; }
 
 /* ========== EXPERIENCE TIMELINE ========== */
+.timeline-wrap {
+  position: relative;
+}
+.timeline-wrap::before {
+  content: "";
+  position: absolute;
+  left: 0.28rem;
+  top: 0.35rem;
+  bottom: 0.35rem;
+  width: 1px;
+  background: var(--line-strong);
+}
+.timeline-progress {
+  position: absolute;
+  left: 0.28rem;
+  top: 0.35rem;
+  width: 1px;
+  height: 0;
+  background: linear-gradient(180deg, var(--coral) 0%, rgba(255, 77, 77, 0.35) 100%);
+  transform-origin: top;
+  pointer-events: none;
+  will-change: height;
+  z-index: 0;
+}
 .career-timeline {
+  position: relative;
   list-style: none;
   margin: 0;
   padding: 0;
-  border-left: 1px solid var(--line-strong);
+  border-left: none;
+  z-index: 1;
 }
 .career-timeline li {
   position: relative;
   padding: 0 0 2.25rem 1.75rem;
+  opacity: 0.45;
+  transform: translateY(0.75rem);
+  transition: opacity 0.45s var(--ease), transform 0.45s var(--ease);
 }
 .career-timeline li:last-child { padding-bottom: 0; }
+.career-timeline li.is-inview {
+  opacity: 1;
+  transform: translateY(0);
+}
 .career-timeline li::before {
   content: "";
   position: absolute;
-  left: -0.35rem;
+  left: 0;
   top: 0.35rem;
   width: 0.65rem;
   height: 0.65rem;
   border-radius: 50%;
   background: var(--canvas);
-  border: 2px solid var(--coral);
+  border: 2px solid var(--dim);
+  box-shadow: none;
+  transition: border-color 0.35s ease, box-shadow 0.35s ease, background 0.35s ease;
+}
+.career-timeline li.is-inview::before {
+  border-color: var(--coral);
+  background: var(--canvas);
   box-shadow: 0 0 0 4px var(--coral-soft);
 }
 .career-timeline .when {
@@ -843,6 +893,14 @@ main { position: relative; }
   max-width: 58ch;
 }
 .career-timeline p:last-child { margin-bottom: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .career-timeline li {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
 
 /* ========== SKILLS ========== */
 .skill-groups {
@@ -1149,48 +1207,59 @@ footer a:hover { color: var(--coral); }
 .case-section li { margin-bottom: 0.55rem; }
 .case-section strong { color: var(--ink); }
 
-/* Sticky case progress / mini nav */
+/* Sticky case progress — fixed center highlight; track flicks underneath */
 .case-progress {
   position: sticky;
   top: var(--nav-h);
   z-index: 30;
-  display: flex;
-  gap: 0.2rem;
-  align-items: center;
-  overflow-x: auto;
-  padding: 0.55rem 0;
   margin: 0 0 1.75rem;
+  padding: 0.45rem 0;
   background: rgba(10, 10, 11, 0.92);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--line);
-  scrollbar-width: none;
 }
-.case-progress::-webkit-scrollbar { display: none; }
-.case-progress-track {
+.case-progress-window {
   position: relative;
-  display: flex;
-  align-items: center;
-  gap: 0.2rem;
-  width: max-content;
-  min-width: 100%;
+  overflow: hidden;
+  height: 2.5rem;
 }
-.case-progress-pill {
+.case-progress-highlight {
   position: absolute;
+  left: 50%;
   top: 50%;
-  left: 0;
+  z-index: 2;
+  width: var(--case-tab-w, 6.5rem);
   height: 2rem;
-  width: 0;
-  transform: translate3d(0, -50%, 0);
+  transform: translate(-50%, -50%);
   border-radius: 2px;
   background: var(--coral-soft);
-  border: 1px solid rgba(255, 77, 77, 0.4);
+  border: 1px solid rgba(255, 77, 77, 0.45);
   pointer-events: none;
-  will-change: transform, width;
+  transition: width 0.14s ease-out;
+}
+.case-progress-track {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  height: 100%;
+  width: max-content;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+}
+.case-progress-track.is-flicking {
+  transition: transform 0.16s cubic-bezier(0.2, 0.85, 0.25, 1);
 }
 .case-progress a {
   position: relative;
   z-index: 1;
   flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2rem;
   font-family: var(--font-display);
   font-size: 0.68rem;
   font-weight: 700;
@@ -1198,17 +1267,18 @@ footer a:hover { color: var(--coral); }
   text-transform: uppercase;
   text-decoration: none;
   color: var(--dim);
-  padding: 0.45rem 0.7rem;
+  padding: 0.45rem 0.75rem;
   border-radius: 2px;
-  border: 1px solid transparent;
   background: transparent;
-  transition: color 0.2s ease;
+  transition: color 0.15s ease;
+  white-space: nowrap;
 }
-.case-progress a:hover {
-  color: var(--ink);
-}
-.case-progress a.is-active {
-  color: var(--ink);
+.case-progress a:hover { color: var(--ink); }
+.case-progress a.is-active { color: var(--ink); }
+
+@media (prefers-reduced-motion: reduce) {
+  .case-progress-track.is-flicking { transition: none; }
+  .case-progress-highlight { transition: none; }
 }
 
 /* FOOTPRINT metrics — bars + rings around existing numbers only */

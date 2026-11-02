@@ -46,6 +46,77 @@
     revealTargets.forEach((el) => revealObserver.observe(el));
   }
 
+  /* In-page section navigation — root fix for dead #anchor clicks */
+  const navOffset = () => {
+    const nav = document.querySelector(".topnav");
+    return (nav ? nav.offsetHeight : 60) + 10;
+  };
+
+  const scrollToId = (id, behavior) => {
+    if (!id) return false;
+    const target = document.getElementById(id);
+    if (!target) return false;
+    document.body.classList.remove("nav-locked");
+    const top = target.getBoundingClientRect().top + window.scrollY - navOffset();
+    window.scrollTo({
+      top: Math.max(0, top),
+      behavior: behavior || (reduceMotion ? "auto" : "smooth"),
+    });
+    return true;
+  };
+
+  const closeDrawerIfOpen = () => {
+    const nav = document.querySelector("[data-nav]");
+    if (!nav || !nav.classList.contains("is-open")) return;
+    nav.classList.remove("is-open");
+    const toggle = nav.querySelector(".nav-toggle");
+    if (toggle) toggle.setAttribute("aria-expanded", "false");
+    document.body.classList.remove("nav-locked");
+    const backdrop = document.querySelector(".nav-backdrop");
+    if (backdrop) {
+      backdrop.classList.remove("is-visible");
+      backdrop.hidden = true;
+    }
+  };
+
+  document.addEventListener("click", (event) => {
+    const link = event.target.closest("a[href]");
+    if (!link) return;
+
+    const raw = link.getAttribute("href");
+    if (!raw || raw === "#" || raw.startsWith("mailto:") || raw.startsWith("tel:")) return;
+
+    let url;
+    try {
+      url = new URL(raw, window.location.href);
+    } catch (_) {
+      return;
+    }
+
+    const normalizePath = (path) =>
+      path.replace(/\/index\.html$/i, "/").replace(/\/+$/, "") || "/";
+    const samePage =
+      url.origin === window.location.origin &&
+      normalizePath(url.pathname) === normalizePath(window.location.pathname);
+    if (!samePage || !url.hash || url.hash.length < 2) return;
+
+    const id = decodeURIComponent(url.hash.slice(1));
+    if (!document.getElementById(id)) return;
+
+    event.preventDefault();
+    closeDrawerIfOpen();
+    scrollToId(id);
+    window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}#${id}`);
+  });
+
+  /* Honor hash on load (home or returning from a project page) */
+  window.addEventListener("load", () => {
+    const id = window.location.hash ? decodeURIComponent(window.location.hash.slice(1)) : "";
+    if (id) {
+      requestAnimationFrame(() => scrollToId(id, "auto"));
+    }
+  });
+
   /* Mobile burger — self-contained drawer; close control is a real button hit target */
   (() => {
     const nav = document.querySelector("[data-nav]");
@@ -93,17 +164,14 @@
       setOpen(true);
     });
 
-    /* Bind close on the button itself; icon has pointer-events: none */
     panel.addEventListener("click", (event) => {
       const closer = event.target.closest("[data-drawer-close]");
       if (closer) {
         event.preventDefault();
         event.stopPropagation();
         setOpen(false);
-        return;
       }
-      const link = event.target.closest("a");
-      if (link && mq.matches) setOpen(false);
+      /* in-page links are handled by the document click scroll helper above */
     });
 
     backdrop.addEventListener("click", () => setOpen(false));
@@ -241,10 +309,7 @@
 
     const setActiveIndex = (index, withFlick) => {
       if (index < 0 || index >= links.length) return;
-      if (index === activeIndex) {
-        centerTrackOn(index, false);
-        return;
-      }
+      if (index === activeIndex) return;
       activeIndex = index;
       links.forEach((link, i) => link.classList.toggle("is-active", i === index));
       centerTrackOn(index, withFlick);
@@ -296,7 +361,7 @@
     window.addEventListener("resize", () => setActiveIndex(Math.max(0, activeIndex), false), { passive: true });
   })();
 
-  /* Experience timeline — coral progress line + item reveal while scrolling */
+  /* Experience timeline — smooth lerped progress line + filled/empty dots */
   (() => {
     const wrap = document.querySelector("[data-timeline]");
     if (!wrap) return;
@@ -311,11 +376,70 @@
       wrap.prepend(progressEl);
     }
 
+    items.forEach((item) => {
+      if (!item.querySelector(".timeline-dot")) {
+        const dot = document.createElement("span");
+        dot.className = "timeline-dot";
+        dot.setAttribute("aria-hidden", "true");
+        item.prepend(dot);
+      }
+    });
+
     if (reduceMotion) {
-      items.forEach((item) => item.classList.add("is-inview"));
+      items.forEach((item) => item.classList.add("is-inview", "is-reached"));
       progressEl.style.height = `${Math.max(0, list.offsetHeight - 8)}px`;
       return;
     }
+
+    let currentH = 0;
+    let targetH = 0;
+    let rafId = 0;
+
+    const measureTarget = () => {
+      const trackH = Math.max(0, list.offsetHeight - 8);
+      const rect = wrap.getBoundingClientRect();
+      const start = rect.top + window.scrollY;
+      const view = window.scrollY + window.innerHeight * 0.52;
+      const raw = (view - start) / Math.max(1, trackH);
+      const pct = Math.max(0, Math.min(1, raw));
+      targetH = pct * trackH;
+
+      items.forEach((item) => {
+        const dot = item.querySelector(".timeline-dot");
+        const y = (dot || item).offsetTop + ((dot || item).offsetHeight / 2);
+        const reached = currentH >= y - 4;
+        item.classList.toggle("is-reached", reached);
+        if (reached) item.classList.add("is-inview");
+      });
+    };
+
+    const tick = () => {
+      measureTarget();
+      const delta = targetH - currentH;
+      if (Math.abs(delta) < 0.35) {
+        currentH = targetH;
+      } else {
+        currentH += delta * 0.14;
+      }
+      progressEl.style.height = `${currentH}px`;
+
+      items.forEach((item) => {
+        const dot = item.querySelector(".timeline-dot");
+        const y = (dot || item).offsetTop + ((dot || item).offsetHeight / 2);
+        item.classList.toggle("is-reached", currentH >= y - 4);
+      });
+
+      if (Math.abs(targetH - currentH) >= 0.35) {
+        rafId = requestAnimationFrame(tick);
+      } else {
+        rafId = 0;
+      }
+    };
+
+    const kick = () => {
+      measureTarget();
+      if (!rafId) rafId = requestAnimationFrame(tick);
+    };
 
     const itemObserver = new IntersectionObserver(
       (entries) => {
@@ -323,31 +447,12 @@
           if (entry.isIntersecting) entry.target.classList.add("is-inview");
         });
       },
-      { threshold: 0.35, rootMargin: "0px 0px -10% 0px" }
+      { threshold: 0.25, rootMargin: "0px 0px -8% 0px" }
     );
     items.forEach((item) => itemObserver.observe(item));
 
-    let ticking = false;
-    const updateLine = () => {
-      ticking = false;
-      const rect = wrap.getBoundingClientRect();
-      const trackH = Math.max(0, list.offsetHeight - 8);
-      const start = rect.top + window.scrollY;
-      const end = start + trackH;
-      const view = window.scrollY + window.innerHeight * 0.55;
-      const raw = (view - start) / Math.max(1, end - start);
-      const pct = Math.max(0, Math.min(1, raw));
-      progressEl.style.height = `${pct * trackH}px`;
-    };
-
-    const onScroll = () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(updateLine);
-    };
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll, { passive: true });
-    updateLine();
+    window.addEventListener("scroll", kick, { passive: true });
+    window.addEventListener("resize", kick, { passive: true });
+    kick();
   })();
 })();

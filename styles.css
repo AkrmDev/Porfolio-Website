@@ -1523,46 +1523,51 @@ footer.site-footer {
 .related-card:hover .related-card__body h3 { color: var(--coral); }
 
 /* Education detail */
+.edu-hero {
+  position: relative;
+  width: 100%;
+  height: clamp(14rem, 38vw, 26rem);
+  overflow: hidden;
+  border-bottom: 1px solid var(--line);
+  background: #050506;
+}
+.edu-hero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 40%;
+  display: block;
+}
+.edu-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(10, 10, 11, 0.18) 0%, transparent 38%, rgba(10, 10, 11, 0.72) 100%),
+    linear-gradient(90deg, rgba(10, 10, 11, 0.35) 0%, transparent 45%);
+  pointer-events: none;
+}
 .edu-intro__row {
   display: flex;
   gap: 1.15rem;
   align-items: flex-start;
 }
-.edu-intro__media {
-  display: flex;
-  flex-direction: row;
-  gap: 0.55rem;
-  flex-shrink: 0;
-}
-.edu-profile,
-.edu-campus {
+.edu-profile {
   width: 5.25rem;
   height: 6.85rem;
   object-fit: cover;
-  object-position: center;
+  object-position: center top;
   border-radius: 4px;
   border: 1px solid var(--line-strong);
   flex-shrink: 0;
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
 }
-.edu-profile { object-position: center top; }
-.edu-campus { object-position: center 35%; }
-.edu-campus--wide {
-  width: 8.5rem;
-  height: 5.5rem;
-  object-position: center 40%;
-}
 @media (max-width: 520px) {
-  .edu-intro__media { flex-direction: row; }
-  .edu-profile,
-  .edu-campus {
+  .edu-profile {
     width: 4.5rem;
     height: 5.9rem;
   }
-  .edu-campus--wide {
-    width: 7.25rem;
-    height: 4.7rem;
-  }
+  .edu-hero { height: clamp(11rem, 48vw, 16rem); }
 }
 .course-list {
   list-style: none;

@@ -1,14 +1,14 @@
 /**
  * Noir Signal — site interactions
- * Handles navigation, motion, UI sound, and project-page effects.
+ * Handles navigation, motion, and subtle UI feedback sounds.
  * Runs once as an IIFE so nothing leaks onto window.
  */
 (() => {
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   /* ---------- UI click audio (Web Audio; no external files) ----------
-     Soft synthesized ticks on interactive controls. AudioContext is
-     created lazily on the first user gesture so browsers allow playback. */
+     Quiet, short sine “tap” for controls. AudioContext starts on the
+     first user gesture so browsers allow playback. */
   const uiAudio = (() => {
     let ctx = null;
     const ensure = () => {
@@ -19,38 +19,30 @@
       return ctx;
     };
 
-    const tone = ({ freq = 880, endFreq = 440, dur = 0.05, type = "triangle", vol = 0.04, delay = 0 } = {}) => {
+    /** Soft professional tap: low volume sine with a fast attack/release. */
+    const click = () => {
       const c = ensure();
       if (!c) return;
-      const t0 = c.currentTime + delay;
+      const t0 = c.currentTime;
       const osc = c.createOscillator();
       const gain = c.createGain();
       const filter = c.createBiquadFilter();
       filter.type = "lowpass";
-      filter.frequency.value = 2400;
-      osc.type = type;
-      osc.frequency.setValueAtTime(freq, t0);
-      osc.frequency.exponentialRampToValueAtTime(Math.max(40, endFreq), t0 + dur);
-      gain.gain.setValueAtTime(vol, t0);
-      gain.gain.exponentialRampToValueAtTime(0.0008, t0 + dur);
+      filter.frequency.value = 1600;
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(620, t0);
+      osc.frequency.exponentialRampToValueAtTime(380, t0 + 0.055);
+      gain.gain.setValueAtTime(0.0001, t0);
+      gain.gain.exponentialRampToValueAtTime(0.014, t0 + 0.008);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.07);
       osc.connect(filter);
       filter.connect(gain);
       gain.connect(c.destination);
       osc.start(t0);
-      osc.stop(t0 + dur + 0.03);
+      osc.stop(t0 + 0.09);
     };
 
-    return {
-      /** Short confirmation tick for buttons, tabs, and nav. */
-      click() {
-        tone({ freq: 980, endFreq: 520, dur: 0.04, type: "triangle", vol: 0.032 });
-      },
-      /** Dual-layer cue when the Matrix rain burst starts. */
-      matrix() {
-        tone({ freq: 180, endFreq: 90, dur: 0.12, type: "sawtooth", vol: 0.028 });
-        tone({ freq: 1240, endFreq: 640, dur: 0.09, type: "square", vol: 0.018, delay: 0.02 });
-      },
-    };
+    return { click };
   })();
 
   /* Wire click sounds to primary interactive controls (not every DOM click). */
@@ -61,8 +53,6 @@
         "button, .btn, .arch-node, .site-nav__burger, .site-menu__x, .site-menu__backdrop, a.card-btn, .case-progress-track a, .site-nav__desktop a, .site-menu__nav a, .edu-card, .related-card, .cert-card, .social-logo, .site-footer__resume, .site-footer__nav a, .site-footer__social a"
       );
       if (!hit) return;
-      /* Matrix images play their own cue — skip the generic tick there. */
-      if (event.target.closest("[data-matrix-target]")) return;
       uiAudio.click();
     },
     true
@@ -621,124 +611,5 @@
 
     /* Seed first node so the panel is never an empty dead zone on load. */
     render(nodes[0].getAttribute("data-arch-node"));
-  })();
-
-  /* ---------- Matrix rain on project images ----------
-     Clicking a case-study cover or gallery still triggers a short digital-rain
-     burst over that frame. Skipped when the user prefers reduced motion. */
-  (() => {
-    const targets = document.querySelectorAll(".case-cover img, .gallery figure img");
-    if (!targets.length) return;
-
-    const glyphs = "ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ01アイウエオカキクケコ01<>*+-=$:#";
-
-    targets.forEach((img) => {
-      img.setAttribute("data-matrix-target", "");
-      img.setAttribute("title", "Click for Matrix effect");
-      if (!img.hasAttribute("tabindex")) img.setAttribute("tabindex", "0");
-      img.setAttribute("role", "button");
-      img.setAttribute("aria-label", `${img.alt || "Project image"} — play Matrix effect`);
-    });
-
-    const runMatrix = (img) => {
-      const host = img.closest(".case-cover, .gallery figure");
-      if (!host) return;
-
-      /* One burst at a time per frame. */
-      if (host.querySelector(".matrix-overlay")) return;
-
-      if (reduceMotion) {
-        host.classList.add("matrix-flash");
-        uiAudio.matrix();
-        window.setTimeout(() => host.classList.remove("matrix-flash"), 420);
-        return;
-      }
-
-      const canvas = document.createElement("canvas");
-      canvas.className = "matrix-overlay";
-      canvas.setAttribute("aria-hidden", "true");
-      host.appendChild(canvas);
-
-      const ctx = canvas.getContext("2d");
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      let width = 0;
-      let height = 0;
-      let columns = [];
-      let raf = 0;
-      const started = performance.now();
-      const duration = 2200;
-
-      const resize = () => {
-        const rect = host.getBoundingClientRect();
-        width = Math.max(1, Math.floor(rect.width));
-        height = Math.max(1, Math.floor(rect.height));
-        canvas.width = Math.floor(width * dpr);
-        canvas.height = Math.floor(height * dpr);
-        canvas.style.width = `${width}px`;
-        canvas.style.height = `${height}px`;
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        const fontSize = Math.max(12, Math.round(width / 48));
-        const colCount = Math.ceil(width / fontSize);
-        columns = Array.from({ length: colCount }, () => ({
-          y: Math.random() * height,
-          speed: 2.2 + Math.random() * 5.5,
-          fontSize,
-        }));
-      };
-
-      resize();
-      host.classList.add("is-matrix-active");
-      uiAudio.matrix();
-
-      const tick = (now) => {
-        const elapsed = now - started;
-        const fade = elapsed > duration - 500 ? Math.max(0, 1 - (elapsed - (duration - 500)) / 500) : 1;
-
-        /* Trailing veil so glyphs leave a rain trail. */
-        ctx.fillStyle = `rgba(5, 8, 6, ${0.14 + (1 - fade) * 0.1})`;
-        ctx.fillRect(0, 0, width, height);
-
-        columns.forEach((col, i) => {
-          const x = i * col.fontSize;
-          const ch = glyphs.charAt((Math.random() * glyphs.length) | 0);
-          ctx.font = `${col.fontSize}px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace`;
-          ctx.fillStyle = `rgba(255, 77, 77, ${0.15 * fade})`;
-          ctx.fillText(ch, x + 1, col.y + 1);
-          ctx.fillStyle = `rgba(90, 255, 140, ${0.85 * fade})`;
-          ctx.fillText(ch, x, col.y);
-          /* Bright head glyph */
-          ctx.fillStyle = `rgba(220, 255, 230, ${0.95 * fade})`;
-          ctx.fillText(glyphs.charAt((Math.random() * glyphs.length) | 0), x, col.y - col.fontSize);
-
-          col.y += col.speed;
-          if (col.y > height + col.fontSize * 2) {
-            col.y = -Math.random() * height * 0.3;
-            col.speed = 2.2 + Math.random() * 5.5;
-          }
-        });
-
-        if (elapsed < duration) {
-          raf = requestAnimationFrame(tick);
-        } else {
-          cancelAnimationFrame(raf);
-          canvas.remove();
-          host.classList.remove("is-matrix-active");
-        }
-      };
-
-      raf = requestAnimationFrame(tick);
-    };
-
-    targets.forEach((img) => {
-      img.addEventListener("click", (event) => {
-        event.preventDefault();
-        runMatrix(img);
-      });
-      img.addEventListener("keydown", (event) => {
-        if (event.key !== "Enter" && event.key !== " ") return;
-        event.preventDefault();
-        runMatrix(img);
-      });
-    });
   })();
 })();

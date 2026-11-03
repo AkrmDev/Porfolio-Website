@@ -7,7 +7,28 @@ Personal portfolio for **Akram Ali**, Software Engineer. Static HTML/CSS/JS with
 Published with **GitHub Pages** from this repository:
 
 - Source: branch `main`, folder `/` (repository root)
-- URL: https://akrmdev.github.io/Porfolio-Website/
+- Custom domain: **https://akramalidev.com**
+- GitHub Pages fallback: https://akrmdev.github.io/Porfolio-Website/
+
+### Custom domain DNS (Cloudflare)
+
+Point the apex and `www` at GitHub Pages:
+
+| Type | Name | Content |
+| --- | --- | --- |
+| `A` | `@` | `185.199.108.153` |
+| `A` | `@` | `185.199.109.153` |
+| `A` | `@` | `185.199.110.153` |
+| `A` | `@` | `185.199.111.153` |
+| `AAAA` | `@` | `2606:50c0:8000::153` |
+| `AAAA` | `@` | `2606:50c0:8001::153` |
+| `AAAA` | `@` | `2606:50c0:8002::153` |
+| `AAAA` | `@` | `2606:50c0:8003::153` |
+| `CNAME` | `www` | `akrmdev.github.io` |
+
+In Cloudflare, set those records to **DNS only** (grey cloud) until the GitHub Pages SSL certificate issues, then you can enable the proxy if you want. After DNS propagates, turn on **Enforce HTTPS** in the repo’s Pages settings.
+
+The repo root includes a `CNAME` file (`akramalidev.com`) so Pages binds the custom domain.
 
 ## Local preview
 
@@ -16,3 +37,4 @@ Open `index.html` in a browser, or serve the repo root:
 ```bash
 python3 -m http.server 5173
 ```
+

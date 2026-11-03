@@ -1530,14 +1530,14 @@ footer.site-footer {
 }
 .edu-intro__media {
   display: flex;
-  flex-direction: column;
-  gap: 0.65rem;
+  flex-direction: row;
+  gap: 0.55rem;
   flex-shrink: 0;
 }
 .edu-profile,
 .edu-campus {
-  width: 5.5rem;
-  height: 7.1rem;
+  width: 5.25rem;
+  height: 6.85rem;
   object-fit: cover;
   object-position: center;
   border-radius: 4px;
@@ -1546,7 +1546,15 @@ footer.site-footer {
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
 }
 .edu-profile { object-position: center top; }
-.edu-campus { object-position: center 40%; }
+.edu-campus { object-position: center 35%; }
+@media (max-width: 520px) {
+  .edu-intro__media { flex-direction: row; }
+  .edu-profile,
+  .edu-campus {
+    width: 4.5rem;
+    height: 5.9rem;
+  }
+}
 .course-list {
   list-style: none;
   margin: 0;

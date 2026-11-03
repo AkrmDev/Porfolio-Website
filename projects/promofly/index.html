@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PROMOFLY — Software Case Study | Akram Ali</title>
+  <meta name="description" content="PROMOFLY — full-stack social publishing app with React, Firebase, Node.js, and platform API integrations. In progress." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Syne:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../assets/site-20261102n.css" />
+</head>
+<body>
+  <div class="atmosphere" aria-hidden="true"></div>
+  <header class="site-nav" data-site-nav>
+    <a class="site-nav__brand" href="../../">Akram Ali</a>
+    <nav class="site-nav__desktop" aria-label="Primary">
+      <a href="../../#projects">Projects</a>
+      <a href="../../#experience">Experience</a>
+      <a href="../../#skills">Skills</a>
+      <a href="../../#about">Education</a>
+      <a href="../../#contact">Contact</a>
+      <a class="site-nav__resume" href="../../Akram_Ali_Software_Engineer_Resume.pdf" download="Akram_Ali_Software_Engineer_Resume.pdf" target="_blank" rel="noopener noreferrer">Download Resume</a>
+    </nav>
+    <button
+      class="site-nav__burger"
+      type="button"
+      aria-expanded="false"
+      aria-controls="site-menu"
+      aria-label="Open menu"
+      data-site-menu-open
+    >
+      <span class="site-nav__burger-icon" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </span>
+    </button>
+  </header>
+
+  <div class="site-menu" id="site-menu" hidden data-site-menu>
+    <button class="site-menu__backdrop" type="button" aria-label="Close menu" data-site-menu-close tabindex="-1"></button>
+    <div class="site-menu__sheet" role="dialog" aria-modal="true" aria-labelledby="site-menu-title">
+      <div class="site-menu__chrome">
+        <p class="site-menu__title" id="site-menu-title">Menu</p>
+        <button class="site-menu__x" type="button" aria-label="Close menu" data-site-menu-close>
+          <span class="site-menu__x-glyph" aria-hidden="true"></span>
+        </button>
+      </div>
+      <nav class="site-menu__nav" aria-label="Mobile">
+        <a href="../../#projects">Projects</a>
+        <a href="../../#experience">Experience</a>
+        <a href="../../#skills">Skills</a>
+        <a href="../../#about">Education</a>
+        <a href="../../#contact">Contact</a>
+        <a class="site-menu__resume" href="../../Akram_Ali_Software_Engineer_Resume.pdf" download="Akram_Ali_Software_Engineer_Resume.pdf" target="_blank" rel="noopener noreferrer">Download Resume</a>
+      </nav>
+    </div>
+  </div>
+
+  <div class="case-cover">
+    <img src="../../assets/projects/promofly.jpg" alt="Promofly marketing banner" />
+  </div>
+
+  <article class="case">
+    <div class="case-intro">
+      <p class="eyebrow">Full Stack · Sep 2025 – Present · In progress</p>
+      <h1>PROMOFLY</h1>
+      <p class="case-lead">A social publishing application for scheduling and posting to Instagram, TikTok, X, LinkedIn, Facebook, and YouTube from one dashboard. Currently in active development.</p>
+      <ul class="tags">
+        <li>React</li><li>Firebase</li><li>Node.js</li><li>Express</li><li>Platform APIs</li>
+      </ul>
+      <div class="case-actions early">
+        <a class="btn signal" href="https://promptly-4f67d.web.app/" target="_blank" rel="noopener noreferrer">Visit live app</a>
+      </div>
+    </div>
+
+    <nav class="case-progress" aria-label="Case study sections">
+      <div class="case-progress-window">
+        <div class="case-progress-highlight" aria-hidden="true"></div>
+        <div class="case-progress-track">
+<a href="#overview">Overview</a>
+      <a href="#problem">Problem</a>
+      <a href="#role">Role</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#stack">Stack</a>
+      <a href="#challenges">Challenges</a>
+      <a href="#results">Results</a>
+        </div>
+      </div>
+    </nav>
+
+    <section class="case-section" id="overview">
+      <h2>Overview</h2>
+      <p>Promofly consolidates multi-network posting into a single web app so creators can plan content, schedule ahead, and publish without switching between separate social tools.</p>
+    </section>
+    <section class="case-section" id="problem">
+      <h2>Problem</h2>
+      <p>Social workflows are fragmented across separate logins, caption formats, and schedulers. Teams need authentication, storage, API publishing, and a single coherent interface in one product.</p>
+    </section>
+    <section class="case-section" id="role">
+      <h2>My role</h2>
+      <p>Designing and implementing the full stack: React client for navigation and publishing flows, Firebase for auth and persistence, Node/Express services for outbound platform APIs, and iterative product work toward scheduling and multi-network publish.</p>
+    </section>
+    <section class="case-section" id="architecture">
+      <h2>Architecture</h2>
+      <p>Browser client talks to Firebase for identity and stored content state. Server routes wrap third-party social APIs so tokens and publish calls stay off the client where possible. The hosted build on Firebase Hosting is the current deployment surface while features land incrementally.</p>
+    </section>
+    <section class="case-section" id="stack">
+      <h2>Tech stack</h2>
+      <ul class="badges">
+        <li>React</li><li>Firebase Auth &amp; storage</li><li>Node.js</li><li>Express</li><li>Twitter / platform APIs</li>
+      </ul>
+    </section>
+    <section class="case-section" id="challenges">
+      <h2>Technical challenges &amp; solutions</h2>
+      <ul>
+        <li><strong>Multi-platform APIs:</strong> normalize auth and publish flows behind server routes instead of hard-coding each network into the UI.</li>
+        <li><strong>Auth + persistence:</strong> Firebase for signup/login and durable user data without standing up a custom auth service first.</li>
+        <li><strong>Incremental delivery:</strong> ship a live build while scheduling, captions, and analytics continue to expand.</li>
+      </ul>
+    </section>
+    <section class="case-section" id="results">
+      <h2>Results</h2>
+      <p>Delivered a working full-stack foundation with authenticated users, a React application interface, Firebase backend services, and API-backed publishing paths. Additional features remain in progress.</p>
+      <div class="case-actions">
+        <a class="btn signal" href="https://promptly-4f67d.web.app/" target="_blank" rel="noopener noreferrer">Open live app</a>
+        <a class="btn quiet dark" href="../../#projects">Back to projects</a>
+      </div>
+    </section>
+  </article>
+  <footer class="site-footer">
+    <div class="site-footer__grid">
+      <div class="site-footer__brand">
+        <p class="site-footer__name">Akram Ali</p>
+        <p class="site-footer__role">Software Engineer · Detroit, MI</p>
+      </div>
+      <nav class="site-footer__nav" aria-label="Footer">
+        <a href="../../#projects">Projects</a>
+        <a href="../../#experience">Experience</a>
+        <a href="../../#skills">Skills</a>
+        <a href="../../#about">Education</a>
+        <a href="../../#contact">Contact</a>
+      </nav>
+      <div class="site-footer__actions">
+        <a class="site-footer__resume" href="../../Akram_Ali_Software_Engineer_Resume.pdf" download="Akram_Ali_Software_Engineer_Resume.pdf" target="_blank" rel="noopener noreferrer">Download Resume</a>
+        <div class="site-footer__social">
+          <a href="https://github.com/akrmDev" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <a href="https://www.linkedin.com/in/akram-m-ali/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+          <a href="mailto:ali.akram.213103@gmail.com">Email</a>
+        </div>
+      </div>
+    </div>
+    <p class="footer-copy">© <span data-year>2026</span> Akram Ali. All rights reserved.</p>
+  </footer>
+  <script src="../../assets/site-20261102n.js"></script>
+</body>
+</html>

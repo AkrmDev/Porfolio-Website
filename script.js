@@ -456,4 +456,101 @@
     window.addEventListener("resize", kick, { passive: true });
     kick();
   })();
+
+  /* Footprint interactive architecture flow (only when markup present) */
+  (() => {
+    const root = document.querySelector("[data-arch-flow]");
+    if (!root) return;
+
+    const panel = root.querySelector("[data-arch-panel]");
+    const body = root.querySelector("[data-arch-panel-body]");
+    const kicker = root.querySelector("[data-arch-kicker]");
+    const titleEl = root.querySelector("[data-arch-title]");
+    const factsEl = root.querySelector("[data-arch-facts]");
+    const nodes = [...root.querySelectorAll("[data-arch-node]")];
+    if (!panel || !body || !kicker || !titleEl || !factsEl || !nodes.length) return;
+
+    /* Contracts grounded in github.com/akrmDev/Missing-Person-App */
+    const contracts = {
+      ingest: {
+        kicker: "Stage 01 · Ingest",
+        title: "Camera Feed / Upload",
+        facts: [
+          ["Input", "YouTube URL (validated) + optional camera/upload path"],
+          ["Operator fields", "Feed name · <code>processing_speed</code> (slow / medium / fast)"],
+          ["Handoff", "Creates a <code>live_feeds</code> doc with <code>feed_status: queued</code>"],
+          ["Endpoint", "<code>POST /upload/</code>"],
+        ],
+      },
+      django: {
+        kicker: "Stage 02 · Control plane",
+        title: "Django API Server",
+        facts: [
+          ["Runtime", "Django 5.1 · <code>home/views.py</code> orchestrates jobs"],
+          ["Auth / users", "Firebase Auth + Firestore user records"],
+          ["Job kickoff", "<code>docker-compose run --rm rq-worker python video_Enqueue.py …</code>"],
+          ["Key routes", "<code>/upload/</code> · <code>/check-status/</code> · <code>/search_attributes1/</code> · <code>/dashboard/</code>"],
+        ],
+      },
+      yolo: {
+        kicker: "Stage 03 · Inference",
+        title: "Dockerized YOLOv5 Inference",
+        facts: [
+          ["Container", "<code>python:3.10-slim</code> + Torch / OpenCV · RQ worker"],
+          ["Model", "Ultralytics <code>yolov5s</code> (person class) → cropped detections"],
+          ["Latency tradeoff", "Frame interval 1 / 5 / 10 sec maps to fast / medium / slow coverage"],
+          ["Worker limits", "Compose caps ≈ <code>0.5 CPU</code> · <code>512MB</code> RAM per worker"],
+          ["Pipeline", "<code>video_Enqueue.py</code> → <code>Video_processing.py</code> → attribute scripts"],
+        ],
+      },
+      data: {
+        kicker: "Stage 04 · Data plane",
+        title: "Redis / Firestore",
+        facts: [
+          ["Queue", "Redis <code>:6379</code> · <code>REDIS_URL=redis://redis-server:6379/0</code> · RQ jobs"],
+          ["Results", "Firestore <code>IdentifiedPersons</code> + clothing attribute docs"],
+          ["Job status", "Firestore <code>live_feeds</code> polled by <code>GET /check-status/</code>"],
+          ["Contract", "Detection crops + timestamps + speed key joinable to a feed"],
+        ],
+      },
+      dashboard: {
+        kicker: "Stage 05 · Operator UI",
+        title: "Operator Web Dashboard",
+        facts: [
+          ["Surfaces", "Upload queue / history · attribute search · result galleries"],
+          ["Query API", "<code>/search_attributes1/</code> filters hair / clothing traits"],
+          ["Review aids", "Deep-links into source video at <code>detection_time</code>"],
+          ["Admin", "<code>/admin_dashboard/</code> for account status controls"],
+        ],
+      },
+    };
+
+    const render = (id) => {
+      const data = contracts[id];
+      if (!data) return;
+      kicker.textContent = data.kicker;
+      titleEl.textContent = data.title;
+      factsEl.innerHTML = data.facts
+        .map(([dt, dd]) => `<dt>${dt}</dt><dd>${dd}</dd>`)
+        .join("");
+      body.hidden = false;
+      panel.classList.remove("is-empty");
+      nodes.forEach((node) => {
+        const on = node.getAttribute("data-arch-node") === id;
+        node.classList.toggle("is-active", on);
+        node.setAttribute("aria-pressed", on ? "true" : "false");
+      });
+    };
+
+    nodes.forEach((node) => {
+      node.setAttribute("aria-pressed", "false");
+      const id = node.getAttribute("data-arch-node");
+      node.addEventListener("mouseenter", () => render(id));
+      node.addEventListener("focus", () => render(id));
+      node.addEventListener("click", () => render(id));
+    });
+
+    /* Seed first node so the panel is never an empty dead zone on load */
+    render(nodes[0].getAttribute("data-arch-node"));
+  })();
 })();

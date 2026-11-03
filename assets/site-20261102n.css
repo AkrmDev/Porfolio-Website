@@ -1547,12 +1547,21 @@ footer.site-footer {
 }
 .edu-profile { object-position: center top; }
 .edu-campus { object-position: center 35%; }
+.edu-campus--wide {
+  width: 8.5rem;
+  height: 5.5rem;
+  object-position: center 40%;
+}
 @media (max-width: 520px) {
   .edu-intro__media { flex-direction: row; }
   .edu-profile,
   .edu-campus {
     width: 4.5rem;
     height: 5.9rem;
+  }
+  .edu-campus--wide {
+    width: 7.25rem;
+    height: 4.7rem;
   }
 }
 .course-list {

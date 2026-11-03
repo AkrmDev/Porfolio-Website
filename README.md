@@ -30,11 +30,25 @@ In Cloudflare, set those records to **DNS only** (grey cloud) until the GitHub P
 
 The repo root includes a `CNAME` file (`akramalidev.com`) so Pages binds the custom domain.
 
+### Clean URLs
+
+Pages use folder routes (no `.html` in the address bar), for example:
+
+- `https://akramalidev.com/` — home
+- `https://akramalidev.com/projects/footprint/`
+- `https://akramalidev.com/experience/web-platform-development/`
+- `https://akramalidev.com/education/wayne-state/`
+
+Legacy `*.html` paths redirect to the matching folder. Old bookmarks keep working.
+
 ## Local preview
 
-Open `index.html` in a browser, or serve the repo root:
+Serve the repo root (so directory URLs resolve):
 
 ```bash
 python3 -m http.server 5173
 ```
+
+Then open `http://127.0.0.1:5173/` (not a raw `index.html` file path).
+
 

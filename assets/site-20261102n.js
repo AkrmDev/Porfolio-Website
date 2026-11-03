@@ -1,62 +1,10 @@
 /**
  * Noir Signal — site interactions
- * Handles navigation, motion, and subtle UI feedback sounds.
+ * Handles navigation, motion, and case-study UI (no click audio).
  * Runs once as an IIFE so nothing leaks onto window.
  */
 (() => {
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  /* ---------- UI click audio (Web Audio; no external files) ----------
-     Quiet, short sine “tap” for controls. AudioContext starts on the
-     first user gesture so browsers allow playback. */
-  const uiAudio = (() => {
-    let ctx = null;
-    const ensure = () => {
-      const AC = window.AudioContext || window.webkitAudioContext;
-      if (!AC) return null;
-      if (!ctx) ctx = new AC();
-      if (ctx.state === "suspended") ctx.resume();
-      return ctx;
-    };
-
-    /** Soft professional tap: low volume sine with a fast attack/release. */
-    const click = () => {
-      const c = ensure();
-      if (!c) return;
-      const t0 = c.currentTime;
-      const osc = c.createOscillator();
-      const gain = c.createGain();
-      const filter = c.createBiquadFilter();
-      filter.type = "lowpass";
-      filter.frequency.value = 1600;
-      osc.type = "sine";
-      osc.frequency.setValueAtTime(620, t0);
-      osc.frequency.exponentialRampToValueAtTime(380, t0 + 0.055);
-      gain.gain.setValueAtTime(0.0001, t0);
-      gain.gain.exponentialRampToValueAtTime(0.014, t0 + 0.008);
-      gain.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.07);
-      osc.connect(filter);
-      filter.connect(gain);
-      gain.connect(c.destination);
-      osc.start(t0);
-      osc.stop(t0 + 0.09);
-    };
-
-    return { click };
-  })();
-
-  /* Wire click sounds to primary interactive controls (not every DOM click). */
-  document.addEventListener(
-    "click",
-    (event) => {
-      const hit = event.target.closest(
-        "button, .btn, .arch-node, .site-nav__burger, .site-menu__x, .site-menu__backdrop, a.card-btn, .case-progress-track a, .site-nav__desktop a, .site-menu__nav a, .edu-card, .related-card, .cert-card, .social-logo, .site-footer__resume, .site-footer__nav a, .site-footer__social a"
-      );
-      if (!hit) return;
-      uiAudio.click();
-    },
-    true
-  );
 
   /* ---------- Copyright year ---------- */
   const year = String(new Date().getFullYear());

@@ -37,6 +37,17 @@
     }
   }
 
+  /* Sticky nav densifies after leaving the top of the page */
+  (() => {
+    const nav = document.querySelector("[data-site-nav]");
+    if (!nav) return;
+    const syncNav = () => {
+      nav.classList.toggle("is-scrolled", window.scrollY > 18);
+    };
+    syncNav();
+    window.addEventListener("scroll", syncNav, { passive: true });
+  })();
+
   /* Intersection reveals for bands + case sections */
   const revealTargets = document.querySelectorAll(".band, .case-section");
   if (reduceMotion) {

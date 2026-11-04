@@ -1,5 +1,5 @@
 /**
- * Noir Signal — site interactions
+ * Portfolio site interactions
  * Handles navigation, motion, and case-study UI (no click audio).
  * Runs once as an IIFE so nothing leaks onto window.
  */

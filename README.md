@@ -1,6 +1,6 @@
-# Akram Ali — Portfolio (Noir Signal)
+# Akram Ali — Portfolio
 
-Personal portfolio for **Akram Ali**, Software Engineer. Static HTML/CSS/JS with project case studies, resume, and assets. Dark cinematic **Noir Signal** design with Version 2 content hierarchy (software applications first, then data & analytics, then professional web work).
+Personal portfolio for **Akram Ali**, Software Engineer. Static HTML/CSS/JS with project case studies, resume, and assets.
 
 ## Live site
 
@@ -50,5 +50,3 @@ python3 -m http.server 5173
 ```
 
 Then open `http://127.0.0.1:5173/` (not a raw `index.html` file path).
-
-
